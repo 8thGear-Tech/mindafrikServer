@@ -49,8 +49,8 @@ const userController = {
     const tokenPayload = { email: newUser.email };
     const verificationToken = generateToken(tokenPayload);
 
-    // const verificationLink = `https://mindafrikserver.onrender.com/user/verify-email?token=${verificationToken}`;
-    const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
+    const verificationLink = `https://mindafrikserver.onrender.com/user/verify-email?token=${verificationToken}`;
+    // const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
     sendVerificationEmail(req, newUser.email, verificationLink);
 
     res.status(201).json({
@@ -84,8 +84,8 @@ const userController = {
 
       user.isEmailVerified = true;
       await user.save();
-      // res.redirect("https://www.mindafrik.com/email-verified");
-      res.redirect("http://localhost:3000/email-verified");
+      res.redirect("https://www.mindafrik.com/email-verified");
+      // res.redirect("http://localhost:3000/email-verified");
     } catch (error) {
       console.error("Token validation failed:", error);
       res.status(400).json({

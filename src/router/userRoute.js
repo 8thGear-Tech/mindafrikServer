@@ -8,5 +8,9 @@ userRouter.post(
   "/signup",
   tryCatchHandler(userController.userSignupController)
 );
+userRouter.get(
+  "/verify-email",
+  tryCatchHandler(userController.verifyEmailController)
+);
 
 export default userRouter;

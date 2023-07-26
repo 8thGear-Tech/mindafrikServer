@@ -15,4 +15,9 @@ const userSignUpValidator = Joi.object({
     ),
 });
 
+// const userLoginValidator = Joi.object({
+//   email: Joi.string().required().email(),
+//   password: Joi.string().required(),
+// });
+
 export default userSignUpValidator;

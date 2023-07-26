@@ -12,5 +12,6 @@ userRouter.get(
   "/verify-email",
   tryCatchHandler(userController.verifyEmailController)
 );
+userRouter.post("/login", tryCatchHandler(userController.userLoginController));
 
 export default userRouter;

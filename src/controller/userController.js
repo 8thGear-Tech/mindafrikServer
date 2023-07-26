@@ -1,7 +1,9 @@
 import { BadUserRequestError, NotFoundError } from "../error/error.js";
 import User from "../model/userModel.js";
-import userSignUpValidator from "../validators/userValidator.js";
-import userLoginValidator from "../validators/userValidator.js";
+import {
+  userSignUpValidator,
+  userLoginValidator,
+} from "../validators/userValidator.js";
 import jwt from "jsonwebtoken";
 import { sendVerificationEmail } from "../config/mailer.js";
 import bcrypt from "bcrypt";
@@ -47,8 +49,8 @@ const userController = {
     const tokenPayload = { email: newUser.email };
     const verificationToken = generateToken(tokenPayload);
 
-    const verificationLink = `https://mindafrikserver.onrender.com/user/verify-email?token=${verificationToken}`;
-    // const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
+    // const verificationLink = `https://mindafrikserver.onrender.com/user/verify-email?token=${verificationToken}`;
+    const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
     sendVerificationEmail(req, newUser.email, verificationLink);
 
     res.status(201).json({
@@ -82,8 +84,8 @@ const userController = {
 
       user.isEmailVerified = true;
       await user.save();
-      res.redirect("https://www.mindafrik.com/email-verified");
-      // res.redirect("http://localhost:3000/email-verified");
+      // res.redirect("https://www.mindafrik.com/email-verified");
+      res.redirect("http://localhost:3000/email-verified");
     } catch (error) {
       console.error("Token validation failed:", error);
       res.status(400).json({
@@ -92,53 +94,24 @@ const userController = {
       });
     }
   },
-  // userLoginController: async (req, res) => {
-  //   const { error } = userLoginValidator.validate(req.body);
-  //   if (error) throw error;
-  //   const user = await User.findOne({
-  //     email: req.body?.email,
-  //   });
-  //   if (!user) throw new BadUserRequestError("Incorrect email");
-  //   const hash = bcrypt.compareSync(req.body.password, user.password);
-  //   if (!hash) throw new BadUserRequestError("incorrect password");
+  userLoginController: async (req, res) => {
+    const { error } = userLoginValidator.validate(req.body);
+    if (error) throw error;
+    const user = await User.findOne({
+      email: req.body?.email,
+    });
+    if (!user) throw new BadUserRequestError("Incorrect email");
+    const hash = bcrypt.compareSync(req.body.password, user.password);
+    if (!hash) throw new BadUserRequestError("incorrect password");
 
-  //   // Get user agent and IP information
-  //   const device = useragent.parse(req.headers["user-agent"]);
-  //   const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
-  //   const location = geoip.lookup(ip);
-
-  //   // Check if user's device or location has changed
-  //   const previousDevice = user.device || "";
-  //   const previousLocation = user.location || "";
-
-  //   if (previousDevice !== device.source || previousLocation !== location) {
-  //     // Send email notification about login attempt from different device, IP, or location
-  //     await transporter.sendMail({
-  //       from: "hembee999@gmail.com",
-  //       to: user.email,
-  //       subject: "New Login Notification",
-  //       html: `<p>A new login was detected for your account.</p>
-  //          <p>Device: ${device.source}</p>
-  //          <p>Location: ${location}</p>`,
-  //     });
-  //   }
-
-  //   // Update user information with current device and location details
-  //   user.device = device.source;
-  //   user.ip = ip;
-  //   user.location = location
-  //     ? `${location.country}, ${location.city}`
-  //     : "Unknown";
-  //   await user.save();
-
-  //   res.status(200).json({
-  //     message: "User login successful",
-  //     status: "Success",
-  //     data: {
-  //       user: user,
-  //       access_token: generateToken(user),
-  //     },
-  //   });
-  // },
+    res.status(200).json({
+      message: "User login successful",
+      status: "Success",
+      data: {
+        user: user,
+        access_token: generateToken(user),
+      },
+    });
+  },
 };
 export default userController;

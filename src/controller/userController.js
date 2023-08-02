@@ -118,7 +118,7 @@ const userController = {
 
       res.status(200).json({
         message: "OTP sent to email for verification",
-        data: { user: emailExists, email: email },
+        data: { user: emailExists },
       });
     } else {
       res.status(404).json({ message: "User not found", status: "Error" });

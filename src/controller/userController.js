@@ -169,6 +169,12 @@ const userController = {
       email: req.body?.email,
     });
     if (!user) throw new BadUserRequestError("Incorrect email");
+    const emailExists = await User.findOne({ email });
+    if (!user.isEmailVerified) {
+      throw new BadUserRequestError(
+        "Email not verified. Please verify your email first."
+      );
+    }
     const hash = bcrypt.compareSync(req.body.password, user.password);
     if (!hash) throw new BadUserRequestError("incorrect password");
 

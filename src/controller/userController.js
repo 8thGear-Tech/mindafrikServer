@@ -104,7 +104,13 @@ const userController = {
 
     // Check if user exists
     const emailExists = await User.findOne({ email });
-
+    // if (!emailExists) throw new BadUserRequestError("invalid email");
+    // Check if the email is verified
+    if (!emailExists.isEmailVerified) {
+      throw new BadUserRequestError(
+        "Email not verified. Please verify your email first."
+      );
+    }
     if (emailExists) {
       // Generate OTP
       const otp = Math.floor(Math.random() * 8888 + 1000);

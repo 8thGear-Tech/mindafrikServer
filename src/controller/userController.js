@@ -2,10 +2,12 @@ import { BadUserRequestError, NotFoundError } from "../error/error.js";
 import User from "../model/userModel.js";
 import {
   userSignUpValidator,
+  verifyEmailValidator,
+  otpValidator,
   userLoginValidator,
 } from "../validators/userValidator.js";
 import jwt from "jsonwebtoken";
-import { sendVerificationEmail } from "../config/mailer.js";
+import { sendVerificationEmail, sendOtpEmail } from "../config/mailer.js";
 import bcrypt from "bcrypt";
 import config from "../config/index.js";
 
@@ -93,6 +95,66 @@ const userController = {
         status: "Error",
       });
     }
+  },
+  sendOtpController: async (req, res) => {
+    const { error } = verifyEmailValidator.validate(req.body);
+    if (error) throw error;
+
+    const { email } = req.body;
+
+    // Check if user exists
+    const emailExists = await User.findOne({ email });
+
+    if (emailExists) {
+      // Generate OTP
+      const otp = Math.floor(Math.random() * 8888 + 1000);
+
+      // Update the OTP for the existing user
+      emailExists.otp = otp;
+      await emailExists.save();
+
+      // Send OTP email
+      sendOtpEmail(email, otp);
+
+      res.status(200).json({
+        message: "OTP sent to email for verification",
+        data: { user: emailExists },
+      });
+    } else {
+      res.status(404).json({ message: "User not found", status: "Error" });
+    }
+  },
+  verifyOtpController: async (req, res) => {
+    const { error } = otpValidator.validate(req.body);
+    if (error) throw error;
+    const { email } = req.query;
+    const user = await User.findOne({ email: email });
+    if (!user) throw new BadUserRequestError("invalid email");
+    // Check if the email is verified
+    if (!user.isEmailVerified) {
+      throw new BadUserRequestError(
+        "Email not verified. Please verify your email first."
+      );
+    }
+
+    // if (user.isEmailVerified) {
+    //   return res.status(200).json({
+    //     message: "Email already verified.",
+    //     data: {
+    //       user: user,
+    //     },
+    //   });
+    // }
+    const { otp } = req.body;
+    const verifyOtp = await User.findOne({ email: email, otp: otp });
+    if (!verifyOtp) throw new BadUserRequestError("invalid OTP");
+    // await User.updateOne({ email: email }, { isEmailVerified: true });
+    res.status(200).json({
+      message: "OTP verified successfully",
+      data: {
+        user: verifyOtp,
+      },
+    });
   },
   userLoginController: async (req, res) => {
     const { error } = userLoginValidator.validate(req.body);

@@ -60,3 +60,21 @@ export const sendVerificationEmail = async (req, email, verificationLink) => {
     console.log("ERROR: ", err);
   }
 };
+export const sendOtpEmail = async (email, otp) => {
+  try {
+    const mailOptions = {
+      from: process.env.GMAIL_ADDRESS,
+      to: email,
+      subject: "Password Reset",
+      html: `
+          <p>You have requested to reset your password. Your OTP for password reset is: ${otp}.</p>
+          <p>If you didn't request this, please ignore this email.</p>
+        `,
+    };
+
+    let emailTransporter = await createTransporter();
+    await emailTransporter.sendMail(mailOptions);
+  } catch (err) {
+    console.log("ERROR: ", err);
+  }
+};

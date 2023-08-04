@@ -171,7 +171,7 @@ const userController = {
       email: req.body?.email,
     });
     if (!user) throw new BadUserRequestError("Incorrect email");
-    const emailExists = await User.findOne({ email });
+    // const emailExists = await User.findOne({ email });
     if (!user.isEmailVerified) {
       throw new BadUserRequestError(
         "Email not verified. Please verify your email first."

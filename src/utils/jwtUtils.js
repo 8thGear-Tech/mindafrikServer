@@ -30,16 +30,16 @@ export function verifyToken(token) {
 }
 
 //logout util
-// export function clearTokenCookie(res) {
-//   res.clearCookie("token");
-// }
+export function clearTokenCookie(res) {
+  res.clearCookie("token");
+}
 
-export const clearTokenCookie = (res) => {
-  res.cookie("token", "", {
-    expires: new Date(0), // Set the cookie to an expired date
-    httpOnly: true, // HttpOnly to prevent access from JavaScript
-    secure: process.env.NODE_ENV === "production", // Set to true in production, false for development
-    // sameSite: "strict", // Restrict cookie access to the same site
-  });
-};
+// export const clearTokenCookie = (res) => {
+//   res.cookie("token", "", {
+//     expires: new Date(0), // Set the cookie to an expired date
+//     httpOnly: true, // HttpOnly to prevent access from JavaScript
+//     secure: process.env.NODE_ENV === "production", // Set to true in production, false for development
+//     sameSite: "strict", // Restrict cookie access to the same site
+//   });
+// };
 // module.exports = { generateToken, verifyToken, clearTokenCookie };

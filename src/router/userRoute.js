@@ -25,5 +25,9 @@ userRouter.patch(
 //   tryCatchHandler(userController.resetPasswordController)
 // );
 userRouter.post("/login", tryCatchHandler(userController.userLoginController));
+userRouter.post(
+  "/logout",
+  tryCatchHandler(userController.userLogoutController)
+);
 
 export default userRouter;

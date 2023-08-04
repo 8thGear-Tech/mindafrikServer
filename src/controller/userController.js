@@ -10,19 +10,21 @@ import jwt from "jsonwebtoken";
 import { sendVerificationEmail, sendOtpEmail } from "../config/mailer.js";
 import bcrypt from "bcrypt";
 import config from "../config/index.js";
+import { generateToken } from "../utils/jwtUtils.js";
+import { clearTokenCookie } from "../utils/jwtUtils.js";
 
-const generateToken = (payload) => {
-  try {
-    const expiresIn = "1d"; // Token expires in 1 day
-    const token = jwt.sign({ payload }, process.env.JWT_SECRET, {
-      expiresIn,
-    });
-    return token;
-  } catch (error) {
-    console.error("Error generating token:", error);
-    throw error;
-  }
-};
+// const generateToken = (payload) => {
+//   try {
+//     const expiresIn = "1d"; // Token expires in 1 day
+//     const token = jwt.sign({ payload }, process.env.JWT_SECRET, {
+//       expiresIn,
+//     });
+//     return token;
+//   } catch (error) {
+//     console.error("Error generating token:", error);
+//     throw error;
+//   }
+// };
 
 const userController = {
   userSignupController: async (req, res) => {
@@ -165,11 +167,13 @@ const userController = {
   userLoginController: async (req, res) => {
     const { error } = userLoginValidator.validate(req.body);
     if (error) throw error;
+    // const { email, password } = req.body;
     const user = await User.findOne({
       email: req.body?.email,
     });
-    if (!user) throw new BadUserRequestError("Incorrect email");
-    const emailExists = await User.findOne({ email });
+    if (!user) throw new BadUserRequestError("Email does not exist");
+    // if (!user) throw new BadUserRequestError("Incorrect email");
+    // const emailExists = await User.findOne({ email });
     if (!user.isEmailVerified) {
       throw new BadUserRequestError(
         "Email not verified. Please verify your email first."
@@ -177,6 +181,17 @@ const userController = {
     }
     const hash = bcrypt.compareSync(req.body.password, user.password);
     if (!hash) throw new BadUserRequestError("incorrect password");
+
+    // Generate the authentication token
+    const tokenPayload = { email: user.email };
+    const authToken = generateToken(tokenPayload);
+
+    // Set the authToken as an HTTP-only cookie
+    res.cookie("authToken", authToken, {
+      httpOnly: true,
+      secure: true, // Make sure to use secure: true in production (HTTPS)
+      // You can also set other options like 'maxAge' to control the cookie expiration
+    });
 
     res.status(200).json({
       message: "User login successful",
@@ -186,6 +201,17 @@ const userController = {
         access_token: generateToken(user),
       },
     });
+    //    } catch (error) {
+    //   console.error("Error during login:", error);
+    //   res.status(400).json({
+    //     message: "Login failed",
+    //     status: "Error",
+    //   });
+    // }
+  },
+  userLogoutController: async (req, res) => {
+    clearTokenCookie(res);
+    res.status(200).json({ message: "Logout successful" });
   },
 };
 export default userController;

@@ -28,7 +28,8 @@ app.use("/user", userRouter);
 
 app.use(
   cors({
-    origin: "http://localhost:4000",
+    origin: "https://www.mindafrik.com",
+    // origin: "http://localhost:4000",
   })
 );
 

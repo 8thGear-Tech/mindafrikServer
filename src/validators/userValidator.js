@@ -13,6 +13,7 @@ const userSignUpValidator = Joi.object({
     .message(
       "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character"
     ),
+  // userRole: Joi.string(),
 });
 const verifyEmailValidator = Joi.object({
   email: Joi.string().required().email().message({

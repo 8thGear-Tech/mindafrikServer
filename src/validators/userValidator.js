@@ -18,7 +18,7 @@ const userSignUpValidator = Joi.object({
 const counsellorSignUpValidator = Joi.object({
   firstName: Joi.string(),
   lastName: Joi.string(),
-  email: Joi.string(),
+  email: Joi.string().email(),
   password: Joi.string()
     .min(8)
     .required()
@@ -29,16 +29,16 @@ const counsellorSignUpValidator = Joi.object({
       "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character"
     ),
   gender: Joi.string(),
-  phoneNumber: Joi.number(),
+  phoneNumber: Joi.string(),
   nationality: Joi.string(),
   stateOfOrigin: Joi.string(),
-  resume: Joi.string(),
   dateOfBirth: Joi.string(),
+  resume: Joi.any(),
+  coverletter: Joi.any(),
   school: Joi.string(),
-  coverletter: Joi.string(),
+  degree: Joi.string(),
   discipline: Joi.string(),
   experience: Joi.string(),
-  degree: Joi.string(),
   whyJoinUs: Joi.string(),
 });
 const verifyEmailValidator = Joi.object({

@@ -67,14 +67,17 @@ const upload = multer({
     },
     filename: function (req, file, cb) {
       const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+      console.log("Uploaded File:", file);
       cb(null, file.fieldname + "-" + uniqueSuffix);
     },
   }),
   fileFilter: function (req, file, cb) {
     const allowedMimeTypes = ["image/jpeg", "image/png", "application/pdf"];
     if (allowedMimeTypes.includes(file.mimetype)) {
+      console.log("Accepted File Type:", file.mimetype);
       cb(null, true); // Accept the file
     } else {
+      console.log("Invalid File Type:", file.mimetype);
       cb(
         new Error(
           "Invalid file type. Only JPEG, PNG, and PDF files are allowed."
@@ -84,6 +87,9 @@ const upload = multer({
     }
   },
 });
+
+// const uploadResume = upload.single("resume");
+// const uploadCoverLetter = upload.single("coverletter");
 
 const userController = {
   // userSignupController: async (req, res) => {
@@ -417,102 +423,209 @@ const userController = {
     clearTokenCookie(res);
     res.status(200).json({ message: "Logout successful" });
   },
+
+  //   counsellorController: async (req, res) => {
+  //     try {
+  //       const { error } = counsellorSignUpValidator.validate(req.body);
+  //       if (error) throw error;
+
+  //       const {
+  //         firstName,
+  //         lastName,
+  //         email,
+  //         password,
+  //         gender,
+  //         phoneNumber,
+  //         nationality,
+  //         stateOfOrigin,
+  //         dateOfBirth,
+  //         school,
+  //         degree,
+  //         discipline,
+  //         experience,
+  //         whyJoinUs,
+  //       } = req.body;
+
+  //       const emailExists = await Counsellor.find({ email });
+  //       if (emailExists.length > 0) {
+  //         throw new BadUserRequestError(
+  //           "An account with this email already exists"
+  //         );
+  //       }
+
+  //       // Handle file uploads using Multer middleware
+  //       // upload.single(resume)(req, res, async (err) => {
+  //       //   if (err) {
+  //       //     return res.status(400).json({ error: err.message });
+  //       //   }
+  //       //   console.log("Resume File:", req.file);
+  //       //   // Resume file uploaded successfully
+  //       //   const resume = req.file;
+
+  //       //   // Handle cover letter file upload
+  //       //   upload.single(coverletter)(req, res, async (err) => {
+  //       //     if (err) {
+  //       //       return res.status(400).json({ error: err.message });
+  //       //     }
+
+  //       //     // Cover letter file uploaded successfully
+  //       //     const coverletter = req.file;
+  //       // upload.fields([{ name: "resume" }, { name: "coverletter" }])(
+  //       //   req,
+  //       //   res,
+  //       //   async (err) => {
+  //       //     if (err) {
+  //       //       return res.status(400).json({ error: err.message });
+  //       //     }
+
+  //       //     // Resume and coverletter files uploaded successfully
+  //       //     const resume = req.files["resume"][0];
+  //       //     const coverletter = req.files["coverletter"][0];
+  //       upload.single("resume", (req, file, cb) => {
+  //   if (req.file) {
+  //     // Resume file uploaded successfully
+  //     const resume = req.file;
+  //     cb(null, resume);
+  //   } else {
+  //     // No resume file uploaded
+  //     throw new Error("Please upload a resume file");
+  //   }
+  //       });
+
+  //       upload.single("coverletter", (req, file, cb) => {
+  //   if (req.file) {
+  //     // Resume file uploaded successfully
+  //     const coverletter = req.file;
+  //     cb(null, coverletter);
+  //   } else {
+  //     // No resume file uploaded
+  //     throw new Error("Please upload a resume file");
+  //   }
+  // });
+
+  //           const salt = bcrypt.genSaltSync(10);
+  //           const hashedPassword = bcrypt.hashSync(password, salt);
+
+  //           // Save data to the database
+  //           const newCounsellor = await Counsellor.create({
+  //             firstName: firstName,
+  //             lastName: lastName,
+  //             email: email,
+  //             password: hashedPassword,
+  //             gender: gender,
+  //             phoneNumber: phoneNumber,
+  //             nationality: nationality,
+  //             stateOfOrigin: stateOfOrigin,
+  //             dateOfBirth: dateOfBirth,
+  //             resume: {
+  //               originalName: resume.originalname,
+  //               mimetype: resume.mimetype,
+  //               data: resume.buffer,
+  //             },
+  //             coverletter: {
+  //               originalName: coverletter.originalname,
+  //               mimetype: coverletter.mimetype,
+  //               data: coverletter.buffer,
+  //             },
+  //             school: school,
+  //             degree: degree,
+  //             discipline: discipline,
+  //             experience: experience,
+  //             whyJoinUs: whyJoinUs,
+  //           });
+
+  //           const tokenPayload = { email: newCounsellor.email };
+  //           const verificationToken = generateToken(tokenPayload);
+  //           const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
+  //           sendVerificationEmail(req, newCounsellor.email, verificationLink);
+
+  //           res.status(201).json({
+  //             message: "A new counsellor account has been created successfully",
+  //             status: "Success",
+  //             data: {
+  //               counsellor: newCounsellor,
+  //             },
+  //           });
+  //           // });
+  //         }
+  //       );
+  //     } catch (error) {
+  //       res.status(500).json({
+  //         message: "An error occurred while processing the request",
+  //         status: "Error",
+  //         error: error.message,
+  //       });
+  //     }
+  //   },
+
   counsellorController: async (req, res) => {
     try {
-      const { error } = counsellorSignUpValidator.validate(req.body);
-      if (error) throw error;
-
-      const {
-        firstName,
-        lastName,
-        email,
-        password,
-        gender,
-        phoneNumber,
-        nationality,
-        stateOfOrigin,
-        dateOfBirth,
-        school,
-        discipline,
-        experience,
-        degree,
-        whyJoinUs,
-      } = req.body;
-
-      const emailExists = await Counsellor.find({ email });
-      if (emailExists.length > 0) {
-        throw new BadUserRequestError(
-          "An account with this email already exists"
-        );
-      }
-
-      const salt = bcrypt.genSaltSync(10);
-      const hashedPassword = bcrypt.hashSync(password, salt);
-
-      // Handle file uploads using Multer middleware
-      upload.single("resume")(req, res, async (err) => {
-        if (err) {
-          return res.status(400).json({ error: err.message });
+      // Upload user's resume and cover letter files
+      upload.single("resume", (req, file, cb) => {
+        if (req.file) {
+          // Resume file uploaded successfully
+          const resume = req.file;
+          cb(null, resume);
+        } else {
+          // No resume file uploaded
+          throw new Error("Please upload a resume file");
         }
+      });
 
-        // Resume file uploaded successfully
-        const resume = req.file;
-
-        // Handle cover letter file upload
-        upload.single("coverletter")(req, res, async (err) => {
-          if (err) {
-            return res.status(400).json({ error: err.message });
-          }
-
-          // Cover letter file uploaded successfully
+      upload.single("coverletter", (req, file, cb) => {
+        if (req.file) {
+          // Resume file uploaded successfully
           const coverletter = req.file;
+          cb(null, coverletter);
+        } else {
+          // No resume file uploaded
+          throw new Error("Please upload a cover letter file");
+        }
+      });
 
-          // Save data to the database
-          const newCounsellor = await Counsellor.create({
-            firstName,
-            lastName,
-            email,
-            password: hashedPassword,
-            gender,
-            phoneNumber,
-            nationality,
-            stateOfOrigin,
-            dateOfBirth,
-            school,
-            discipline,
-            experience,
-            degree,
-            whyJoinUs,
-            resume: {
-              originalName: resume.originalname,
-              mimetype: resume.mimetype,
-              data: resume.buffer,
-            },
-            coverletter: {
-              originalName: coverletter.originalname,
-              mimetype: coverletter.mimetype,
-              data: coverletter.buffer,
-            },
-          });
+      // Save data to the database
+      const newCounsellor = await Counsellor.create({
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        password: hashedPassword,
+        gender: gender,
+        phoneNumber: phoneNumber,
+        nationality: nationality,
+        stateOfOrigin: stateOfOrigin,
+        dateOfBirth: dateOfBirth,
+        resume: {
+          originalName: resume.originalname,
+          mimetype: resume.mimetype,
+          data: resume.buffer,
+        },
+        coverletter: {
+          originalName: coverletter.originalname,
+          mimetype: coverletter.mimetype,
+          data: coverletter.buffer,
+        },
+        school: school,
+        degree: degree,
+        discipline: discipline,
+        experience: experience,
+        whyJoinUs: whyJoinUs,
+      });
 
-          const tokenPayload = { email: newCounsellor.email };
-          const verificationToken = generateToken(tokenPayload);
-          const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
-          sendVerificationEmail(req, newCounsellor.email, verificationLink);
+      const tokenPayload = { email: newCounsellor.email };
+      const verificationToken = generateToken(tokenPayload);
+      const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
+      sendVerificationEmail(req, newCounsellor.email, verificationLink);
 
-          res.status(201).json({
-            message: "A new counsellor account has been created successfully",
-            status: "Success",
-            data: {
-              counsellor: newCounsellor,
-            },
-          });
-        });
+      res.status(201).json({
+        message: "A new counsellor account has been created successfully",
+        status: "Success",
+        data: {
+          counsellor: newCounsellor,
+        },
       });
     } catch (error) {
-      res.status(500).json({
-        message: "An error occurred while processing the request",
-        status: "Error",
+      // Handle errors that are thrown during the file upload process
+      res.status(400).json({
         error: error.message,
       });
     }

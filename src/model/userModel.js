@@ -44,23 +44,23 @@ const counsellorSchema = new mongoose.Schema({
   phoneNumber: String,
   nationality: String,
   stateOfOrigin: String,
-  // resume: String,
+  dateOfBirth: String,
   resume: {
     originalName: String,
     mimetype: String,
     data: Buffer,
   },
-  dateOfBirth: String,
-  school: String,
   // coverletter: String,
   coverletter: {
     originalName: String,
     mimetype: String,
     data: Buffer,
   },
+  school: String,
+  // resume: String,
+  degree: String,
   discipline: String,
   experience: String,
-  degree: String,
   whyJoinUs: String,
 });
 

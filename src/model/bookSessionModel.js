@@ -25,7 +25,8 @@ const supportiveListeningSessionSchema = new mongoose.Schema({
   timeSlot: String,
   questionCommentSuggestion: String,
   socialMediaFollowership: String,
-  socialHandleSubscribedTo: String,
+  socialHandleSubscribedTo: [String],
+  // socialHandleSubscribedTo: String,
 });
 
 const SupportiveListeningSession = mongoose.model(

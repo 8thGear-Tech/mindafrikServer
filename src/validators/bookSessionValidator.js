@@ -17,11 +17,10 @@ const supportiveListeningSessionValidator = Joi.object({
   timeSlot: Joi.string(),
   questionCommentSuggestion: Joi.string(),
   socialMediaFollowership: Joi.string(),
-  socialHandleSubscribedTo: Joi.array(), // Change to Joi.array() to match the array type
-  // .items(Joi.string()) // You can add validation for each string item if needed
-  // .min(1) // Ensure at least one item is selected
-  // .required(),
-  //   socialHandleSubscribedTo: Joi.string(),
+  socialHandleSubscribedTo: Joi.array() // Change to Joi.array() to match the array type
+    .items(Joi.string()) // You can add validation for each string item if needed
+    .min(1) // Ensure at least one item is selected
+    .required(),
 });
 
 export { supportiveListeningSessionValidator };

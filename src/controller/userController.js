@@ -1,6 +1,7 @@
 import { BadUserRequestError, NotFoundError } from "../error/error.js";
-import User from "../model/userModel.js";
+import { User, Counsellor } from "../model/userModel.js";
 import {
+  counsellorSignUpValidator,
   userSignUpValidator,
   verifyEmailValidator,
   otpValidator,
@@ -14,6 +15,9 @@ import { generateToken } from "../utils/jwtUtils.js";
 import { clearTokenCookie } from "../utils/jwtUtils.js";
 import { verifyToken } from "../utils/jwtUtils.js";
 
+//multer
+import multer from "multer";
+// const upload = multer({ dest: "uploads/" });
 // const generateToken = (payload) => {
 //   try {
 //     const expiresIn = "1d"; // Token expires in 1 day
@@ -26,6 +30,60 @@ import { verifyToken } from "../utils/jwtUtils.js";
 //     throw error;
 //   }
 // };
+
+//multer
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "/tmp/my-uploads"); // Change this path to where you want to store the uploaded files temporarily
+//   },
+//   filename: function (req, file, cb) {
+//     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+//     cb(null, file.fieldname + "-" + uniqueSuffix);
+//   },
+// });
+
+// const fileFilter = (req, file, cb) => {
+//   // Only allow certain mimetypes for upload (adjust as needed)
+//   const allowedMimeTypes = ["image/jpeg", "image/png", "application/pdf"];
+
+//   if (allowedMimeTypes.includes(file.mimetype)) {
+//     cb(null, true); // Accept the file
+//   } else {
+//     cb(
+//       new Error(
+//         "Invalid file type. Only JPEG, PNG, and PDF files are allowed."
+//       ),
+//       false
+//     );
+//   }
+// };
+
+// const upload = multer({ storage: storage, fileFilter: fileFilter });
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, "images"); // Change this path to where you want to store the uploaded files temporarily
+    },
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+      cb(null, file.fieldname + "-" + uniqueSuffix);
+    },
+  }),
+  fileFilter: function (req, file, cb) {
+    const allowedMimeTypes = ["image/jpeg", "image/png", "application/pdf"];
+    if (allowedMimeTypes.includes(file.mimetype)) {
+      cb(null, true); // Accept the file
+    } else {
+      cb(
+        new Error(
+          "Invalid file type. Only JPEG, PNG, and PDF files are allowed."
+        ),
+        false
+      );
+    }
+  },
+});
 
 const userController = {
   // userSignupController: async (req, res) => {
@@ -111,7 +169,8 @@ const userController = {
   verifyEmailController: async (req, res) => {
     const { token } = req.query;
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = verifyToken(token);
+      // const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const email = decoded.payload.email;
 
       const user = await User.findOne({ email });
@@ -138,6 +197,7 @@ const userController = {
       res.status(400).json({
         message: "Invalid token",
         status: "Error",
+        // error: error.message,
       });
     }
   },
@@ -357,5 +417,175 @@ const userController = {
     clearTokenCookie(res);
     res.status(200).json({ message: "Logout successful" });
   },
+  counsellorController: async (req, res) => {
+    try {
+      const { error } = counsellorSignUpValidator.validate(req.body);
+      if (error) throw error;
+
+      const {
+        firstName,
+        lastName,
+        email,
+        password,
+        gender,
+        phoneNumber,
+        nationality,
+        stateOfOrigin,
+        dateOfBirth,
+        school,
+        discipline,
+        experience,
+        degree,
+        whyJoinUs,
+      } = req.body;
+
+      const emailExists = await Counsellor.find({ email });
+      if (emailExists.length > 0) {
+        throw new BadUserRequestError(
+          "An account with this email already exists"
+        );
+      }
+
+      const salt = bcrypt.genSaltSync(10);
+      const hashedPassword = bcrypt.hashSync(password, salt);
+
+      // Handle file uploads using Multer middleware
+      upload.single("resume")(req, res, async (err) => {
+        if (err) {
+          return res.status(400).json({ error: err.message });
+        }
+
+        // Resume file uploaded successfully
+        const resume = req.file;
+
+        // Handle cover letter file upload
+        upload.single("coverletter")(req, res, async (err) => {
+          if (err) {
+            return res.status(400).json({ error: err.message });
+          }
+
+          // Cover letter file uploaded successfully
+          const coverletter = req.file;
+
+          // Save data to the database
+          const newCounsellor = await Counsellor.create({
+            firstName,
+            lastName,
+            email,
+            password: hashedPassword,
+            gender,
+            phoneNumber,
+            nationality,
+            stateOfOrigin,
+            dateOfBirth,
+            school,
+            discipline,
+            experience,
+            degree,
+            whyJoinUs,
+            resume: {
+              originalName: resume.originalname,
+              mimetype: resume.mimetype,
+              data: resume.buffer,
+            },
+            coverletter: {
+              originalName: coverletter.originalname,
+              mimetype: coverletter.mimetype,
+              data: coverletter.buffer,
+            },
+          });
+
+          const tokenPayload = { email: newCounsellor.email };
+          const verificationToken = generateToken(tokenPayload);
+          const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
+          sendVerificationEmail(req, newCounsellor.email, verificationLink);
+
+          res.status(201).json({
+            message: "A new counsellor account has been created successfully",
+            status: "Success",
+            data: {
+              counsellor: newCounsellor,
+            },
+          });
+        });
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while processing the request",
+        status: "Error",
+        error: error.message,
+      });
+    }
+  },
+  // counsellorController: async (req, res) => {
+  //   const { error } = counsellorSignUpValidator.validate(req.body);
+  //   if (error) throw error;
+  //   const {
+  //     firstName,
+  //     lastName,
+  //     email,
+  //     password,
+  //     gender,
+  //     phoneNumber,
+  //     nationality,
+  //     stateOfOrigin,
+  //     // resume,
+  //     resume = req.file("resume"),
+  //     dateOfBirth,
+  //     school,
+  //     // coverletter,
+  //     coverletter = req.file("coverletter"),
+  //     discipline,
+  //     experience,
+  //     degree,
+  //     whyJoinUs,
+  //   } = req.body;
+
+  //   const emailExists = await Counsellor.find({ email });
+  //   if (emailExists.length > 0)
+  //     throw new BadUserRequestError(
+  //       "An account with this email already exists"
+  //     );
+
+  //   // const saltRounds = config.bcrypt_salt_round;
+  //   // const hashedPassword = bcrypt.hashSync(password, saltRounds);
+
+  //   const salt = bcrypt.genSaltSync(10);
+  //   const hashedPassword = bcrypt.hashSync(password, salt);
+
+  //   const newCounsellor = await User.create({
+  //     firstName: firstName,
+  //     lastName: lastName,
+  //     email: email,
+  //     password: hashedPassword,
+  //     gender: gender,
+  //     phoneNumber: phoneNumber,
+  //     nationality: nationality,
+  //     stateOfOrigin: stateOfOrigin,
+  //     resume: resume,
+  //     dateOfBirth: dateOfBirth,
+  //     school: school,
+  //     coverletter: coverletter,
+  //     discipline: discipline,
+  //     experience: experience,
+  //     degree: degree,
+  //     whyJoinUs: whyJoinUs,
+  //   });
+
+  //   const tokenPayload = { email: newCounsellor.email };
+  //   const verificationToken = generateToken(tokenPayload);
+
+  //   const verificationLink = `https://mindafrikserver.onrender.com/user/verify-email?token=${verificationToken}`;
+  //   // const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
+  //   sendVerificationEmail(req, newUser.email, verificationLink);
+
+  //   res.status(201).json({
+  //     message: "A new counsellor account has been created successfully",
+  //     status: "Success",
+  //     data: {
+  //       counsellor: newCounsellor,
+  //     },
+  //   });
+  // },
 };
 export default userController;

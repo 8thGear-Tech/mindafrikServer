@@ -15,6 +15,32 @@ const userSignUpValidator = Joi.object({
     ),
   // userRole: Joi.string(),
 });
+const counsellorSignUpValidator = Joi.object({
+  firstName: Joi.string(),
+  lastName: Joi.string(),
+  email: Joi.string(),
+  password: Joi.string()
+    .min(8)
+    .required()
+    .pattern(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/
+    )
+    .message(
+      "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character"
+    ),
+  gender: Joi.string(),
+  phoneNumber: Joi.number(),
+  nationality: Joi.string(),
+  stateOfOrigin: Joi.string(),
+  resume: Joi.string(),
+  dateOfBirth: Joi.string(),
+  school: Joi.string(),
+  coverletter: Joi.string(),
+  discipline: Joi.string(),
+  experience: Joi.string(),
+  degree: Joi.string(),
+  whyJoinUs: Joi.string(),
+});
 const verifyEmailValidator = Joi.object({
   email: Joi.string().required().email().message({
     "string.pattern.base": "Invalid email format",
@@ -30,6 +56,7 @@ const userLoginValidator = Joi.object({
 });
 
 export {
+  counsellorSignUpValidator,
   userSignUpValidator,
   verifyEmailValidator,
   otpValidator,

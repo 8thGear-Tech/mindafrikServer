@@ -78,3 +78,36 @@ export const sendOtpEmail = async (email, otp) => {
     console.log("ERROR: ", err);
   }
 };
+
+//subscribe to newsletter
+export const newsletterSubscriptionEmail = async (req, email) => {
+  try {
+    const mailOptions = {
+      from: process.env.GMAIL_ADDRESS,
+      to: email,
+      subject: "Successfully Subscribed to newsletter",
+      html: `<p>You have successfully subscribed to receive newsletters</p>`,
+    };
+
+    let emailTransporter = await createTransporter();
+    await emailTransporter.sendMail(mailOptions);
+  } catch (err) {
+    console.log("ERROR: ", err);
+  }
+};
+//subscribe to newsletter
+export const supportiveListeningSessionEmail = async (req, email) => {
+  try {
+    const mailOptions = {
+      from: process.env.GMAIL_ADDRESS,
+      to: email,
+      subject: "Supportive Listening Session",
+      html: `<p>You have booked a Supportive Listening Session</p>`,
+    };
+
+    let emailTransporter = await createTransporter();
+    await emailTransporter.sendMail(mailOptions);
+  } catch (err) {
+    console.log("ERROR: ", err);
+  }
+};

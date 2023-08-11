@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import globalErrorHandler from "./src/utils/globalErrorHandler.js";
 import userRouter from "./src/router/userRoute.js";
+import newsletterRouter from "./src/router/newsletterRoute.js";
+import bookSessionRouter from "./src/router/bookSessionRouter.js";
 import config from "./src/config/index.js";
 
 dotenv.config({ path: "./configenv.env" });
@@ -25,6 +27,8 @@ app.use(cors());
 
 // Routes
 app.use("/user", userRouter);
+app.use("/subscriber", newsletterRouter);
+app.use("/booking", bookSessionRouter);
 
 app.use(
   cors({

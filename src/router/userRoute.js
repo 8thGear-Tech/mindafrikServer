@@ -39,4 +39,10 @@ userRouter.post(
   tryCatchHandler(userController.userLogoutController)
 );
 
+//counsellor
+userRouter.post(
+  "/sign-up-as-a-counsellor",
+  tryCatchHandler(userController.counsellorController)
+);
+
 export default userRouter;

@@ -80,13 +80,37 @@ export const sendOtpEmail = async (email, otp) => {
 };
 
 //subscribe to newsletter
-export const newsletterSubscriptionEmail = async (req, email) => {
+export const newsletterSubscriptionEmail = async (req, email, firstName) => {
   try {
     const mailOptions = {
       from: process.env.GMAIL_ADDRESS,
       to: email,
-      subject: "Successfully Subscribed to newsletter",
-      html: `<p>You have successfully subscribed to receive newsletters</p>`,
+      subject: "You have successfully subscribed",
+      html: `
+    <p>
+      Dear ${firstName},
+    </p>
+    <p>
+     A warm thank you for subscribing to MindAfrik's newsletter! Your commitment to emotional well-being is truly appreciated.
+    </p>
+    <p>
+     By joining our newsletter, you're taking an important step toward a more empowered and supported life. We're excited to share valuable insights, tips, and resources with you.
+    </p>
+    <p>
+      Your engagement means a lot to us. 
+    </p>
+    <p>
+    Feel free to reach out at <a href="mailto:mailto:support@mindafrik.com">mailto:support@mindafrik.com</a> or <a href="tel:+23481331999533">081331999533</a> if you have any questions or need support.
+    </p>
+    <p>
+      Thank you for allowing us to be part of your journey. We look forward to making a positive impact together.
+    </p>
+    <p>
+      Warm regards,
+      <br />
+      The MindAfrik Team
+    </p>
+  `,
     };
 
     let emailTransporter = await createTransporter();

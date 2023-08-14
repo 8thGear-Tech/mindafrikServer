@@ -18,7 +18,11 @@ const newsletterController = {
       email: email,
     });
 
-    newsletterSubscriptionEmail(req, newSubscriber.email);
+    newsletterSubscriptionEmail(
+      req,
+      newSubscriber.email,
+      newSubscriber.firstName
+    );
 
     res.status(201).json({
       message: "A new user has subscribed to newsletter",

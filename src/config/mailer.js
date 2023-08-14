@@ -100,7 +100,7 @@ export const newsletterSubscriptionEmail = async (req, email, firstName) => {
       Your engagement means a lot to us. 
     </p>
     <p>
-    Feel free to reach out at <a href="mailto:mailto:support@mindafrik.com">mailto:support@mindafrik.com</a> or <a href="tel:+23481331999533">081331999533</a> if you have any questions or need support.
+    Feel free to reach out at <a href="mailto:mailto:support@mindafrik.com">support@mindafrik.com</a> or <a href="tel:+2348134762115">08134762115</a> if you have any questions or need support.
     </p>
     <p>
       Thank you for allowing us to be part of your journey. We look forward to making a positive impact together.
@@ -108,7 +108,7 @@ export const newsletterSubscriptionEmail = async (req, email, firstName) => {
     <p>
       Warm regards,
       <br />
-      The MindAfrik Team
+      The MindAfrik Team.
     </p>
   `,
     };
@@ -120,13 +120,40 @@ export const newsletterSubscriptionEmail = async (req, email, firstName) => {
   }
 };
 //subscribe to newsletter
-export const supportiveListeningSessionEmail = async (req, email) => {
+export const supportiveListeningSessionEmail = async (
+  req,
+  email,
+  firstName
+) => {
   try {
     const mailOptions = {
       from: process.env.GMAIL_ADDRESS,
       to: email,
       subject: "Supportive Listening Session",
-      html: `<p>You have booked a Supportive Listening Session</p>`,
+      html: `
+      <p>
+      Hello ${firstName},
+    </p>
+      <p>
+    We appreciate your choice of MindAfrik for your supportive listening and professional counseling. Your well-being matters to us.
+    </p>
+      <p>
+    We will get back to you with further details about your session's scheduled date and time as well as payment procedure.
+    </p>
+      <p>
+    Your privacy is paramount, and this step ensures a confidential experience. MindAfrik's dedicated professionals are committed to providing you with a safe and empathetic space.
+    </p>
+      <p>
+    Should you encounter any issues or have questions, contact our support team at <a href="mailto:mailto:support@mindafrik.com">support@mindafrik.com</a> or <a href="tel:+23481331999533">081331999533</a>
+    </p>
+      <p>
+    We're eager to accompany you on this journey to emotional wellness.
+    </p>
+      <p>
+   Best regards,<br/>
+   The MindAfrik Team.
+    </p>
+    `,
     };
 
     let emailTransporter = await createTransporter();

@@ -50,7 +50,11 @@ const supportiveListeningSessionController = {
       socialHandleSubscribedTo: socialHandleSubscribedTo,
     });
 
-    supportiveListeningSessionEmail(req, newBooking.email);
+    supportiveListeningSessionEmail(
+      req,
+      newBooking.email,
+      newBooking.firstName
+    );
 
     res.status(201).json({
       message: "A new user has booked a Supportive Listening Session",

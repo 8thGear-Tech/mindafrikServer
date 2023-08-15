@@ -559,9 +559,9 @@ const userController = {
   //   },
 
   counsellorController: async (req, res) => {
-    try {
-      // Upload user's resume and cover letter files
-      upload.single("resume", (req, file, cb) => {
+    const { resume, coverletter } = await upload.single(
+      "resume",
+      (req, file, cb) => {
         if (req.file) {
           // Resume file uploaded successfully
           const resume = req.file;
@@ -570,65 +570,78 @@ const userController = {
           // No resume file uploaded
           throw new Error("Please upload a resume file");
         }
-      });
+      }
+    );
+    // try {
+    // Upload user's resume and cover letter files
+    // upload.single("resume", (req, file, cb) => {
+    //   if (req.file) {
+    //     // Resume file uploaded successfully
+    //     const resume = req.file;
+    //     cb(null, resume);
+    //   } else {
+    //     // No resume file uploaded
+    //     throw new Error("Please upload a resume file");
+    //   }
+    // });
 
-      upload.single("coverletter", (req, file, cb) => {
-        if (req.file) {
-          // Resume file uploaded successfully
-          const coverletter = req.file;
-          cb(null, coverletter);
-        } else {
-          // No resume file uploaded
-          throw new Error("Please upload a cover letter file");
-        }
-      });
+    // upload.single("coverletter", (req, file, cb) => {
+    //   if (req.file) {
+    //     // Resume file uploaded successfully
+    //     const coverletter = req.file;
+    //     cb(null, coverletter);
+    //   } else {
+    //     // No resume file uploaded
+    //     throw new Error("Please upload a cover letter file");
+    //   }
+    // });
 
-      // Save data to the database
-      const newCounsellor = await Counsellor.create({
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        password: hashedPassword,
-        gender: gender,
-        phoneNumber: phoneNumber,
-        nationality: nationality,
-        stateOfOrigin: stateOfOrigin,
-        dateOfBirth: dateOfBirth,
-        resume: {
-          originalName: resume.originalname,
-          mimetype: resume.mimetype,
-          data: resume.buffer,
-        },
-        coverletter: {
-          originalName: coverletter.originalname,
-          mimetype: coverletter.mimetype,
-          data: coverletter.buffer,
-        },
-        school: school,
-        degree: degree,
-        discipline: discipline,
-        experience: experience,
-        whyJoinUs: whyJoinUs,
-      });
+    // Save data to the database
+    const newCounsellor = await Counsellor.create({
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      password: hashedPassword,
+      gender: gender,
+      phoneNumber: phoneNumber,
+      nationality: nationality,
+      stateOfOrigin: stateOfOrigin,
+      dateOfBirth: dateOfBirth,
+      resume: {
+        originalName: resume.originalname,
+        mimetype: resume.mimetype,
+        data: resume.buffer,
+      },
+      coverletter: {
+        originalName: coverletter.originalname,
+        mimetype: coverletter.mimetype,
+        data: coverletter.buffer,
+      },
+      school: school,
+      degree: degree,
+      discipline: discipline,
+      experience: experience,
+      whyJoinUs: whyJoinUs,
+    });
 
-      const tokenPayload = { email: newCounsellor.email };
-      const verificationToken = generateToken(tokenPayload);
-      const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
-      sendVerificationEmail(req, newCounsellor.email, verificationLink);
+    const tokenPayload = { email: newCounsellor.email };
+    const verificationToken = generateToken(tokenPayload);
+    const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
+    sendVerificationEmail(req, newCounsellor.email, verificationLink);
 
-      res.status(201).json({
-        message: "A new counsellor account has been created successfully",
-        status: "Success",
-        data: {
-          counsellor: newCounsellor,
-        },
-      });
-    } catch (error) {
-      // Handle errors that are thrown during the file upload process
-      res.status(400).json({
-        error: error.message,
-      });
-    }
+    res.status(201).json({
+      message: "A new counsellor account has been created successfully",
+      status: "Success",
+      data: {
+        counsellor: newCounsellor,
+      },
+    });
+    // } catch (error) {
+    //   // Handle errors that are thrown during the file upload process
+    //   res.status(400).json({
+    //     error: error.message,
+    //   });
+    // }
   },
   // counsellorController: async (req, res) => {
   //   const { error } = counsellorSignUpValidator.validate(req.body);

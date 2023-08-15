@@ -91,7 +91,7 @@ export const newsletterSubscriptionEmail = async (req, email, firstName) => {
       Dear ${firstName},
     </p>
     <p>
-     A warm thank you for subscribing to MindAfrik's newsletter! Your commitment to emotional well-being is truly appreciated.
+    A warm thank you for subscribing to MindAfrik's newsletter! Your commitment to emotional well-being is truly appreciated.
     </p>
     <p>
      By joining our newsletter, you're taking an important step toward a more empowered and supported life. We're excited to share valuable insights, tips, and resources with you.
@@ -100,7 +100,7 @@ export const newsletterSubscriptionEmail = async (req, email, firstName) => {
       Your engagement means a lot to us. 
     </p>
     <p>
-    Feel free to reach out at <a href="mailto:mailto:support@mindafrik.com">support@mindafrik.com</a> or <a href="tel:+2348134762115">08134762115</a> if you have any questions or need support.
+    Feel free to reach out at <a href="mailto:support@mindafrik.com">support@mindafrik.com</a> or <a href="tel:+23481331999533">081331999533</a> if you have any questions or need support.
     </p>
     <p>
       Thank you for allowing us to be part of your journey. We look forward to making a positive impact together.
@@ -129,25 +129,29 @@ export const supportiveListeningSessionEmail = async (
     const mailOptions = {
       from: process.env.GMAIL_ADDRESS,
       to: email,
-      subject: "Supportive Listening Session",
+      subject: "Successful Booking Confirmation",
       html: `
       <p>
-      Hello ${firstName},
+      Dear ${firstName},
     </p>
       <p>
-    We appreciate your choice of MindAfrik for your supportive listening and professional counseling. Your well-being matters to us.
+   We appreciate your choice of MindAfrik for your supportive listening. Your well-being matters to us.
     </p>
       <p>
-    We will get back to you with further details about your session's scheduled date and time as well as payment procedure.
+    Your booking has been successfully processed. Expect detailed session scheduling and payment information shortly.
     </p>
       <p>
-    Your privacy is paramount, and this step ensures a confidential experience. MindAfrik's dedicated professionals are committed to providing you with a safe and empathetic space.
+   Please note that the virtual supportive listening sessions are paid and calculated per hour.
+Your first 30 minutes are free. Our <b>N5000</b> per month package includes two hours of weekly counseling.
     </p>
       <p>
-    Should you encounter any issues or have questions, contact our support team at <a href="mailto:mailto:support@mindafrik.com">support@mindafrik.com</a> or <a href="tel:+23481331999533">081331999533</a>
+   Ensuring your privacy is paramount, ensuring a confidential experience. Our team is dedicated to creating a secure, empathetic space.
     </p>
       <p>
-    We're eager to accompany you on this journey to emotional wellness.
+    Reach our support at <a href="mailto:support@mindafrik.com">support@mindafrik.com</a> or <a href="tel:+2348134762115">08134762115</a>
+    </p>
+      <p>
+    We eagerly anticipate supporting you on this journey toward emotional wellness.
     </p>
       <p>
    Best regards,<br/>

@@ -2,6 +2,7 @@ import express from "express";
 import userController from "../controller/userController.js";
 import tryCatchHandler from "../utils/tryCatchHandler.js";
 import roleAuthMiddleware from "../middleware/userAuthMiddleware.js";
+import { upload } from "../controller/userController.js";
 
 const userRouter = express.Router();
 
@@ -42,6 +43,7 @@ userRouter.post(
 //counsellor
 userRouter.post(
   "/sign-up-as-a-counsellor",
+  upload.fields([{ name: "resume" }, { name: "coverletter" }]),
   tryCatchHandler(userController.counsellorController)
 );
 

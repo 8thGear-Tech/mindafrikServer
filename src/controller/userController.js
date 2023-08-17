@@ -466,8 +466,10 @@ const userController = {
     // // const coverletterPath = req.file("coverletter")[0].path; // Assuming the field name is 'coverletter'
 
     // Inside your controller
-    const resumeFile = req.files.resume[0];
-    const coverletterFile = req.files.coverletter[0];
+    // const resumeFile = req.files.resume[0];
+    // const coverletterFile = req.files.coverletter[0];
+    const resumeFile = req.files?.resume?.[0];
+    const coverletterFile = req.files?.coverletter?.[0];
 
     if (!resumeFile || !coverletterFile) {
       throw new BadUserRequestError(

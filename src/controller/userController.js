@@ -14,6 +14,7 @@ import config from "../config/index.js";
 import { generateToken } from "../utils/jwtUtils.js";
 import { clearTokenCookie } from "../utils/jwtUtils.js";
 import { verifyToken } from "../utils/jwtUtils.js";
+import saveFileToGridFS from "./saveFileToGridFs.js";
 
 //multer
 import multer from "multer";
@@ -456,11 +457,18 @@ const userController = {
         "An account with this email already exists"
       );
     }
-    // Save uploaded file paths to the database
-    const resumePath = req.file.resume[0].path; // Assuming the field name is 'resume'
-    // const resumePath = req.file("resume")[0].path; // Assuming the field name is 'resume'
-    const coverletterPath = req.file.coverletter[0].path; // Assuming the field name is 'coverletter'
-    // const coverletterPath = req.file("coverletter")[0].path; // Assuming the field name is 'coverletter'
+    // // Save uploaded file paths to the database
+    // const resumePath = req.files.resume[0].path; // Assuming the field name is 'resume'
+    // // const resumePath = req.file("resume")[0].path; // Assuming the field name is 'resume'
+    // const coverletterPath = req.files.coverletter[0].path; // Assuming the field name is 'coverletter'
+    // // const coverletterPath = req.file("coverletter")[0].path; // Assuming the field name is 'coverletter'
+
+    // Inside your controller
+    const resumeFile = req.files.resume[0];
+    const coverletterFile = req.files.coverletter[0];
+
+    const resumeGridFSId = await saveFileToGridFS(resumeFile);
+    const coverletterGridFSId = await saveFileToGridFS(coverletterFile);
 
     // ... (rest of the code)
     const salt = bcrypt.genSaltSync(10);
@@ -478,8 +486,10 @@ const userController = {
       nationality: nationality,
       stateOfOrigin: stateOfOrigin,
       dateOfBirth: dateOfBirth,
-      resume: resumePath, // Store the file path for resume
-      coverletter: coverletterPath, // Store the file path for cover letter
+      // resume: resumePath, // Store the file path for resume
+      // coverletter: coverletterPath, // Store the file path for cover letter
+      resume: resumeGridFSId,
+      coverletter: coverletterGridFSId,
       school: school,
       degree: degree,
       discipline: discipline,

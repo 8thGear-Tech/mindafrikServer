@@ -19,8 +19,10 @@ import saveFileToGridFS from "./saveFileToGridFs.js";
 //multer
 import multer from "multer";
 
-export const upload = multer();
+const storage = multer.memoryStorage(); // Use memory storage for GridFS
+export const upload = multer({ storage });
 
+// export const upload = multer();
 // export { upload };
 // const upload = multer({ dest: "uploads/" });
 // const generateToken = (payload) => {
@@ -466,6 +468,12 @@ const userController = {
     // Inside your controller
     const resumeFile = req.files.resume[0];
     const coverletterFile = req.files.coverletter[0];
+
+    if (!resumeFile || !coverletterFile) {
+      throw new BadUserRequestError(
+        "Resume and coverletter files are required"
+      );
+    }
 
     console.log("Uploaded Files:", req.files);
     const resumeGridFSId = await saveFileToGridFS(resumeFile);

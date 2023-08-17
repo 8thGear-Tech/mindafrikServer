@@ -457,8 +457,10 @@ const userController = {
       );
     }
     // Save uploaded file paths to the database
-    const resumePath = req.file("resume")[0].path; // Assuming the field name is 'resume'
-    const coverletterPath = req.file("coverletter")[0].path; // Assuming the field name is 'coverletter'
+    const resumePath = req.file.resume[0].path; // Assuming the field name is 'resume'
+    // const resumePath = req.file("resume")[0].path; // Assuming the field name is 'resume'
+    const coverletterPath = req.file.coverletter[0].path; // Assuming the field name is 'coverletter'
+    // const coverletterPath = req.file("coverletter")[0].path; // Assuming the field name is 'coverletter'
 
     // ... (rest of the code)
     const salt = bcrypt.genSaltSync(10);

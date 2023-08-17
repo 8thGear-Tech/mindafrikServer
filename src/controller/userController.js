@@ -467,6 +467,7 @@ const userController = {
     const resumeFile = req.files.resume[0];
     const coverletterFile = req.files.coverletter[0];
 
+    console.log("Uploaded Files:", req.files);
     const resumeGridFSId = await saveFileToGridFS(resumeFile);
     const coverletterGridFSId = await saveFileToGridFS(coverletterFile);
 

@@ -21,6 +21,7 @@ const supportiveListeningSessionValidator = Joi.object({
     .items(Joi.string()) // You can add validation for each string item if needed
     .min(1) // Ensure at least one item is selected
     .required(),
+  submittedAt: Joi.date().iso(),
 });
 
 export { supportiveListeningSessionValidator };

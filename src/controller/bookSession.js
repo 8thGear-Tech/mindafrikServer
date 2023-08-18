@@ -25,6 +25,7 @@ const supportiveListeningSessionController = {
       questionCommentSuggestion,
       socialMediaFollowership,
       socialHandleSubscribedTo,
+      submittedAt,
     } = req.body;
     const emailExists = await SupportiveListeningSession.find({ email });
     if (emailExists.length > 0)
@@ -48,6 +49,7 @@ const supportiveListeningSessionController = {
       questionCommentSuggestion: questionCommentSuggestion,
       socialMediaFollowership: socialMediaFollowership,
       socialHandleSubscribedTo: socialHandleSubscribedTo,
+      submittedAt: submittedAt,
     });
 
     supportiveListeningSessionEmail(

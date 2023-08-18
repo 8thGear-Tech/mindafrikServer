@@ -132,7 +132,7 @@ export const supportiveListeningSessionEmail = async (
       subject: "Successful Booking Confirmation",
       html: `
       <p>
-      Dear ${firstName},
+      Dear ${firstName},  
     </p>
       <p>
    We appreciate your choice of MindAfrik for your supportive listening. Your well-being matters to us.

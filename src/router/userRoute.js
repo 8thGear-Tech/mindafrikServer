@@ -2,7 +2,20 @@ import express from "express";
 import userController from "../controller/userController.js";
 import tryCatchHandler from "../utils/tryCatchHandler.js";
 import roleAuthMiddleware from "../middleware/userAuthMiddleware.js";
-import { upload } from "../controller/userController.js";
+// import { upload } from "../controller/userController.js";
+import multer from "multer";
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now();
+    cb(null, uniqueSuffix + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 const userRouter = express.Router();
 
@@ -43,7 +56,7 @@ userRouter.post(
 //counsellor
 userRouter.post(
   "/sign-up-as-a-counsellor",
-  upload.fields([{ name: "resume" }, { name: "coverletter" }]),
+  upload.single("resume"),
   tryCatchHandler(userController.counsellorController)
 );
 

@@ -16,30 +16,30 @@ const userSignUpValidator = Joi.object({
   // userRole: Joi.string(),
 });
 const counsellorSignUpValidator = Joi.object({
-  firstName: Joi.string(),
-  lastName: Joi.string(),
-  email: Joi.string().email(),
-  password: Joi.string()
-    .min(8)
-    .required()
-    .pattern(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/
-    )
-    .message(
-      "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character"
-    ),
-  gender: Joi.string(),
-  phoneNumber: Joi.string(),
-  nationality: Joi.string(),
-  stateOfOrigin: Joi.string(),
-  dateOfBirth: Joi.string(),
+  // firstName: Joi.string(),
+  // lastName: Joi.string(),
+  // email: Joi.string().email(),
+  // password: Joi.string()
+  //   .min(8)
+  //   .required()
+  //   .pattern(
+  //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/
+  //   )
+  //   .message(
+  //     "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character"
+  //   ),
+  // gender: Joi.string(),
+  // phoneNumber: Joi.string(),
+  // nationality: Joi.string(),
+  // stateOfOrigin: Joi.string(),
+  // dateOfBirth: Joi.string(),
   resume: Joi.any(),
-  coverletter: Joi.any(),
-  school: Joi.string(),
-  degree: Joi.string(),
-  discipline: Joi.string(),
-  experience: Joi.string(),
-  whyJoinUs: Joi.string(),
+  // coverletter: Joi.any(),
+  // school: Joi.string(),
+  // degree: Joi.string(),
+  // discipline: Joi.string(),
+  // experience: Joi.string(),
+  // whyJoinUs: Joi.string(),
 });
 const verifyEmailValidator = Joi.object({
   email: Joi.string().required().email().message({

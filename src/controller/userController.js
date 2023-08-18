@@ -18,9 +18,12 @@ import saveFileToGridFS from "./saveFileToGridFs.js";
 
 //multer
 import multer from "multer";
+const upload = multer({ dest: "uploads/" });
 
-const storage = multer.memoryStorage(); // Use memory storage for GridFS
-export const upload = multer({ storage });
+// import multer from "multer";
+
+// const storage = multer.memoryStorage(); // Use memory storage for GridFS
+// export const upload = multer({ storage });
 
 // export const upload = multer();
 // export { upload };
@@ -436,61 +439,63 @@ const userController = {
     const { error } = counsellorSignUpValidator.validate(req.body);
     if (error) throw error;
 
-    const {
-      firstName,
-      lastName,
-      email,
-      password,
-      gender,
-      phoneNumber,
-      nationality,
-      stateOfOrigin,
-      dateOfBirth,
-      resume,
-      coverletter,
-      school,
-      degree,
-      discipline,
-      experience,
-      whyJoinUs,
-    } = req.body;
+    const { resume } = req.file.filename;
+    // const {
+    //   // firstName,
+    //   // lastName,
+    //   // email,
+    //   // password,
+    //   // gender,
+    //   // phoneNumber,
+    //   // nationality,
+    //   // stateOfOrigin,
+    //   // dateOfBirth,
+    //   resume,
+    //   // coverletter,
+    //   // school,
+    //   // degree,
+    //   // discipline,
+    //   // experience,
+    //   // whyJoinUs,
+    // } = req.body;
 
-    const emailExists = await Counsellor.find({ email });
-    if (emailExists.length > 0) {
-      throw new BadUserRequestError(
-        "An account with this email already exists"
-      );
-    }
+    // const emailExists = await Counsellor.find({ email });
+    // if (emailExists.length > 0) {
+    //   throw new BadUserRequestError(
+    //     "An account with this email already exists"
+    //   );
+    // }
 
-    const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(password, salt);
+    // const salt = bcrypt.genSaltSync(10);
+    // const hashedPassword = bcrypt.hashSync(password, salt);
 
     const newCounsellor = await User.create({
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      password: hashedPassword,
-      gender: gender,
-      phoneNumber: phoneNumber,
-      nationality: nationality,
-      stateOfOrigin: stateOfOrigin,
-      dateOfBirth: dateOfBirth,
+      // firstName: firstName,
+      // lastName: lastName,
+      // email: email,
+      // password: hashedPassword,
+      // gender: gender,
+      // phoneNumber: phoneNumber,
+      // nationality: nationality,
+      // stateOfOrigin: stateOfOrigin,
+      // dateOfBirth: dateOfBirth,
       resume: resume,
-      coverletter: coverletter,
-      school: school,
-      degree: degree,
-      discipline: discipline,
-      experience: experience,
-      whyJoinUs: whyJoinUs,
+      // coverletter: coverletter,
+      // school: school,
+      // degree: degree,
+      // discipline: discipline,
+      // experience: experience,
+      // whyJoinUs: whyJoinUs,
     });
     newCounsellor.save();
 
-    const tokenPayload = { email: newCounsellor.email };
-    const verificationToken = generateToken(tokenPayload);
-    const verificationLink = `https://mindafrikserver.onrender.com/user/verify-email?token=${verificationToken}`;
-    // const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
-    sendVerificationEmail(req, newCounsellor.email, verificationLink);
+    // const tokenPayload = { email: newCounsellor.email };
+    // const verificationToken = generateToken(tokenPayload);
+    // const verificationLink = `https://mindafrikserver.onrender.com/user/verify-email?token=${verificationToken}`;
+    // // const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
+    // sendVerificationEmail(req, newCounsellor.email, verificationLink);
 
+    console.log(req.body);
     res.status(201).json({
       message: "A new counsellor account has been created successfully",
       status: "Success",

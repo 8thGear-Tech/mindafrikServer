@@ -446,6 +446,8 @@ const userController = {
       nationality,
       stateOfOrigin,
       dateOfBirth,
+      resume,
+      coverletter,
       school,
       degree,
       discipline,

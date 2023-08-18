@@ -7,7 +7,7 @@ const newsletterController = {
   newSubscribersController: async (req, res) => {
     const { error } = newsletterValidator.validate(req.body);
     if (error) throw error;
-    const { firstName, lastName, email } = req.body;
+    const { firstName, lastName, email, submittedAt } = req.body;
     const emailExists = await NewsletterSubscriber.find({ email });
     if (emailExists.length > 0)
       throw new BadUserRequestError("User already subscribed");
@@ -16,6 +16,7 @@ const newsletterController = {
       firstName: firstName,
       lastName: lastName,
       email: email,
+      submittedAt: submittedAt,
     });
 
     newsletterSubscriptionEmail(

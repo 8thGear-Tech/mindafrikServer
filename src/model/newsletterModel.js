@@ -12,6 +12,7 @@ const newsletterSchema = new mongoose.Schema({
       ],
     },
   },
+  submittedAt: { type: Date, default: Date.now },
 });
 
 const NewsletterSubscriber = mongoose.model(

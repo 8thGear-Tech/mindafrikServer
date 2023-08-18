@@ -119,7 +119,7 @@ export const newsletterSubscriptionEmail = async (req, email, firstName) => {
     console.log("ERROR: ", err);
   }
 };
-//subscribe to newsletter
+//book a session
 export const supportiveListeningSessionEmail = async (
   req,
   email,

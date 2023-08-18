@@ -459,35 +459,11 @@ const userController = {
         "An account with this email already exists"
       );
     }
-    // // Save uploaded file paths to the database
-    // const resumePath = req.files.resume[0].path; // Assuming the field name is 'resume'
-    // // const resumePath = req.file("resume")[0].path; // Assuming the field name is 'resume'
-    // const coverletterPath = req.files.coverletter[0].path; // Assuming the field name is 'coverletter'
-    // // const coverletterPath = req.file("coverletter")[0].path; // Assuming the field name is 'coverletter'
 
-    // Inside your controller
-    // const resumeFile = req.files.resume[0];
-    // const coverletterFile = req.files.coverletter[0];
-    const resumeFile = req.files?.resume?.[0];
-    const coverletterFile = req.files?.coverletter?.[0];
-
-    if (!resumeFile || !coverletterFile) {
-      throw new BadUserRequestError(
-        "Resume and coverletter files are required"
-      );
-    }
-
-    console.log("Uploaded Files:", req.files);
-    const resumeGridFSId = await saveFileToGridFS(resumeFile);
-    const coverletterGridFSId = await saveFileToGridFS(coverletterFile);
-
-    // ... (rest of the code)
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
 
-    // Create new counsellor with file paths
     const newCounsellor = await User.create({
-      // ... (other fields)
       firstName: firstName,
       lastName: lastName,
       email: email,
@@ -497,21 +473,15 @@ const userController = {
       nationality: nationality,
       stateOfOrigin: stateOfOrigin,
       dateOfBirth: dateOfBirth,
-      // resume: resumePath, // Store the file path for resume
-      // coverletter: coverletterPath, // Store the file path for cover letter
-      resume: resumeGridFSId,
-      coverletter: coverletterGridFSId,
+      resume: resume,
+      coverletter: coverletter,
       school: school,
       degree: degree,
       discipline: discipline,
       experience: experience,
       whyJoinUs: whyJoinUs,
-      // ... (rest of the fields)
     });
-
-    // ... (rest of the code)
-
-    // };
+    newCounsellor.save();
 
     const tokenPayload = { email: newCounsellor.email };
     const verificationToken = generateToken(tokenPayload);
@@ -528,6 +498,104 @@ const userController = {
     });
     // });
   },
+
+  //latest
+  // counsellorController: async (req, res) => {
+  //   const { error } = counsellorSignUpValidator.validate(req.body);
+  //   if (error) throw error;
+
+  //   const {
+  //     firstName,
+  //     lastName,
+  //     email,
+  //     password,
+  //     gender,
+  //     phoneNumber,
+  //     nationality,
+  //     stateOfOrigin,
+  //     dateOfBirth,
+  //     school,
+  //     degree,
+  //     discipline,
+  //     experience,
+  //     whyJoinUs,
+  //   } = req.body;
+
+  //   const emailExists = await Counsellor.find({ email });
+  //   if (emailExists.length > 0) {
+  //     throw new BadUserRequestError(
+  //       "An account with this email already exists"
+  //     );
+  //   }
+  //   // // Save uploaded file paths to the database
+  //   // const resumePath = req.files.resume[0].path; // Assuming the field name is 'resume'
+  //   // // const resumePath = req.file("resume")[0].path; // Assuming the field name is 'resume'
+  //   // const coverletterPath = req.files.coverletter[0].path; // Assuming the field name is 'coverletter'
+  //   // // const coverletterPath = req.file("coverletter")[0].path; // Assuming the field name is 'coverletter'
+
+  //   // Inside your controller
+  //   // const resumeFile = req.files.resume[0];
+  //   // const coverletterFile = req.files.coverletter[0];
+  //   const resumeFile = req.files?.resume?.[0];
+  //   const coverletterFile = req.files?.coverletter?.[0];
+
+  //   if (!resumeFile || !coverletterFile) {
+  //     throw new BadUserRequestError(
+  //       "Resume and coverletter files are required"
+  //     );
+  //   }
+
+  //   console.log("Uploaded Files:", req.files);
+  //   const resumeGridFSId = await saveFileToGridFS(resumeFile);
+  //   const coverletterGridFSId = await saveFileToGridFS(coverletterFile);
+
+  //   // ... (rest of the code)
+  //   const salt = bcrypt.genSaltSync(10);
+  //   const hashedPassword = bcrypt.hashSync(password, salt);
+
+  //   // Create new counsellor with file paths
+  //   const newCounsellor = await User.create({
+  //     // ... (other fields)
+  //     firstName: firstName,
+  //     lastName: lastName,
+  //     email: email,
+  //     password: hashedPassword,
+  //     gender: gender,
+  //     phoneNumber: phoneNumber,
+  //     nationality: nationality,
+  //     stateOfOrigin: stateOfOrigin,
+  //     dateOfBirth: dateOfBirth,
+  //     // resume: resumePath, // Store the file path for resume
+  //     // coverletter: coverletterPath, // Store the file path for cover letter
+  //     resume: resumeGridFSId,
+  //     coverletter: coverletterGridFSId,
+  //     school: school,
+  //     degree: degree,
+  //     discipline: discipline,
+  //     experience: experience,
+  //     whyJoinUs: whyJoinUs,
+  //     // ... (rest of the fields)
+  //   });
+
+  //   // ... (rest of the code)
+
+  //   // };
+
+  //   const tokenPayload = { email: newCounsellor.email };
+  //   const verificationToken = generateToken(tokenPayload);
+  //   const verificationLink = `https://mindafrikserver.onrender.com/user/verify-email?token=${verificationToken}`;
+  //   // const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
+  //   sendVerificationEmail(req, newCounsellor.email, verificationLink);
+
+  //   res.status(201).json({
+  //     message: "A new counsellor account has been created successfully",
+  //     status: "Success",
+  //     data: {
+  //       counsellor: newCounsellor,
+  //     },
+  //   });
+  //   // });
+  // },
 
   //   counsellorController: async (req, res) => {
   //     try {

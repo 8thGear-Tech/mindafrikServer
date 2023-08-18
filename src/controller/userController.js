@@ -469,7 +469,7 @@ const userController = {
     // const salt = bcrypt.genSaltSync(10);
     // const hashedPassword = bcrypt.hashSync(password, salt);
 
-    const newCounsellor = await User.create({
+    const newCounsellor = await Counsellor.create({
       // firstName: firstName,
       // lastName: lastName,
       // email: email,

@@ -439,7 +439,7 @@ const userController = {
     const { error } = counsellorSignUpValidator.validate(req.body);
     if (error) throw error;
 
-    const { resume } = req.file.filename;
+    const resume = req.file.filename;
     // const {
     //   // firstName,
     //   // lastName,
@@ -487,7 +487,7 @@ const userController = {
       // experience: experience,
       // whyJoinUs: whyJoinUs,
     });
-    newCounsellor.save();
+    // newCounsellor.save();
 
     // const tokenPayload = { email: newCounsellor.email };
     // const verificationToken = generateToken(tokenPayload);

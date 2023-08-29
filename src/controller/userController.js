@@ -458,15 +458,15 @@ const userController = {
       // whyJoinUs,
     } = req.body;
 
-    const emailExists = await Counsellor.find({ email });
-    if (emailExists.length > 0) {
-      throw new BadUserRequestError(
-        "An account with this email already exists"
-      );
-    }
+    // const emailExists = await Counsellor.find({ email });
+    // if (emailExists.length > 0) {
+    //   throw new BadUserRequestError(
+    //     "An account with this email already exists"
+    //   );
+    // }
 
-    const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(password, salt);
+    // const salt = bcrypt.genSaltSync(10);
+    // const hashedPassword = bcrypt.hashSync(password, salt);
 
     const newCounsellor = await Counsellor.create({
       firstName: firstName,
@@ -488,11 +488,11 @@ const userController = {
     });
     // newCounsellor.save();
 
-    const tokenPayload = { email: newCounsellor.email };
-    const verificationToken = generateToken(tokenPayload);
-    const verificationLink = `https://mindafrikserver.onrender.com/user/verify-email?token=${verificationToken}`;
-    // const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
-    sendVerificationEmail(req, newCounsellor.email, verificationLink);
+    // const tokenPayload = { email: newCounsellor.email };
+    // const verificationToken = generateToken(tokenPayload);
+    // const verificationLink = `https://mindafrikserver.onrender.com/user/verify-email?token=${verificationToken}`;
+    // // const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
+    // sendVerificationEmail(req, newCounsellor.email, verificationLink);
 
     console.log(req.body);
     res.status(201).json({

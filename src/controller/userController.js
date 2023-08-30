@@ -439,8 +439,8 @@ const userController = {
     const { error } = counsellorSignUpValidator.validate(req.body);
     if (error) throw error;
 
-    const resume = req.file.filename;
-    const coverletter = req.file.filename;
+    const { resume, coverletter } = req.file.filename;
+    // const coverletter = req.file.filename;
     const {
       firstName,
       lastName,

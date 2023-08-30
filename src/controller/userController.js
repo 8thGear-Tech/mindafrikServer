@@ -440,7 +440,7 @@ const userController = {
     if (error) throw error;
 
     const resume = req.file.filename;
-    const coverletter = req.file.filename;
+    // const coverletter = req.file.filename;
     const {
       firstName,
       lastName,
@@ -479,7 +479,7 @@ const userController = {
       stateOfOrigin: stateOfOrigin,
       dateOfBirth: dateOfBirth,
       resume: resume,
-      coverletter: coverletter,
+      // coverletter: coverletter,
       school: school,
       degree: degree,
       discipline: discipline,

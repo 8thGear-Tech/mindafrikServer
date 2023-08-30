@@ -51,7 +51,7 @@ const counsellorSchema = new mongoose.Schema({
   //   data: Buffer,
   // },
   resume: String,
-  coverletter: String,
+  // coverletter: String,
   // coverletter: {
   //   originalName: String,
   //   mimetype: String,

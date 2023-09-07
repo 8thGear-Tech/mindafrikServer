@@ -45,7 +45,12 @@ const createTransporter = async () => {
   }
 };
 
-export const sendVerificationEmail = async (req, email, verificationLink) => {
+export const sendVerificationEmail = async (
+  req,
+  email,
+  firstName,
+  verificationLink
+) => {
   try {
     const mailOptions = {
       from: process.env.GMAIL_ADDRESS,

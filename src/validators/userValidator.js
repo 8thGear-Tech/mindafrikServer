@@ -40,6 +40,7 @@ const counsellorSignUpValidator = Joi.object({
   discipline: Joi.string(),
   experience: Joi.string(),
   whyJoinUs: Joi.string(),
+  submittedAt: Joi.string(),
   // submittedAt: Joi.string().pattern(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/), // Add a pattern to match the desired format
 });
 

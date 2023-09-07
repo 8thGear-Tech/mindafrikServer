@@ -460,6 +460,7 @@ const userController = {
       discipline,
       experience,
       whyJoinUs,
+      submittedAt,
     } = req.body;
 
     const emailExists = await Counsellor.find({ email });
@@ -489,6 +490,7 @@ const userController = {
       discipline: discipline,
       experience: experience,
       whyJoinUs: whyJoinUs,
+      submittedAt: submittedAt,
     });
     newCounsellor.save();
 

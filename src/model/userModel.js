@@ -62,6 +62,14 @@ const counsellorSchema = new mongoose.Schema({
   discipline: String,
   experience: String,
   whyJoinUs: String,
+  //new
+  submittedAt: String,
+});
+//new
+counsellorSchema.pre("save", function (next) {
+  const currentDate = new Date();
+  this.submittedAt = currentDate.toISOString().slice(0, 16);
+  next();
 });
 
 const Counsellor = mongoose.model("Counsellor", counsellorSchema);

@@ -27,7 +27,14 @@ const supportiveListeningSessionSchema = new mongoose.Schema({
   socialMediaFollowership: String,
   socialHandleSubscribedTo: [String],
   submittedAt: { type: Date, default: Date.now },
+  // submittedAt: String,
 });
+
+// supportiveListeningSessionSchema.pre("save", function (next) {
+//   const currentDate = new Date();
+//   this.submittedAt = currentDate.toISOString().slice(0, 16);
+//   next();
+// });
 
 const SupportiveListeningSession = mongoose.model(
   "SupportiveListeningSession",

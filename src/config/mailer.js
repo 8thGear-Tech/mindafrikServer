@@ -50,8 +50,34 @@ export const sendVerificationEmail = async (req, email, verificationLink) => {
     const mailOptions = {
       from: process.env.GMAIL_ADDRESS,
       to: email,
-      subject: "Email Verification",
-      html: `<p>Please verify your email by clicking <a href="${verificationLink}">here</a>.</p>`,
+      subject: "Complete Your Verification Process",
+      // html: `<p>Please verify your email by clicking <a href="${verificationLink}">here</a>.</p>`,
+      html: ` 
+      <p>
+      Dear ${firstName},
+    </p>
+    <p>
+    Thank you for choosing MindAfrik to offer your professional support. We're thrilled to have you on board.
+    </p>
+    <p>
+    To finalize your registration, and account setup for the beginning of your journey with us, please verify your account by clicking this <a href="${verificationLink}">link</a>
+    </p>
+    <p>
+   Completing this step will ensure the accuracy and security of your profile. You'll soon be matched with clients seeking your expertise.
+    </p>
+    <p>
+    At MindAfrik, we value your dedication to making a positive impact. Should you encounter any issues or have questions, reach out to us at <a href="mailto:support@mindafrik.com">support@mindafrik.com</a> or <a href="tel:+23481331999533">081331999533</a>
+    </p>
+    <p>
+   We appreciate your commitment to providing exceptional counseling. Let's work together to create a supportive and healing environment for those in need.
+    </p>
+    <p>
+   Best Regards,
+    </p>
+    <p>
+   The MindAfrik Team.
+    </p>
+    `,
     };
 
     let emailTransporter = await createTransporter();

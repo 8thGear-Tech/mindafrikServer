@@ -54,18 +54,18 @@ userRouter.post(
 );
 
 //counsellor
-// userRouter.post(
-//   "/sign-up-as-a-counsellor",
-//   upload.single("resume"),
-//   tryCatchHandler(userController.counsellorController)
-// );
 userRouter.post(
   "/sign-up-as-a-counsellor",
-  upload.fields([
-    { name: "resume", maxCount: 1 },
-    { name: "coverletter", maxCount: 1 },
-  ]),
+  upload.single("resume"),
   tryCatchHandler(userController.counsellorController)
 );
+// userRouter.post(
+//   "/sign-up-as-a-counsellor",
+//   upload.fields([
+//     { name: "resume", maxCount: 1 },
+//     { name: "coverletter", maxCount: 1 },
+//   ]),
+//   tryCatchHandler(userController.counsellorController)
+// );
 
 export default userRouter;

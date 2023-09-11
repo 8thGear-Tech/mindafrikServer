@@ -62,6 +62,11 @@ const counsellorSchema = new mongoose.Schema({
   discipline: String,
   experience: String,
   whyJoinUs: String,
+  isEmailVerified: {
+    type: Boolean,
+    default: false,
+  },
+  otp: Number,
   roles: {
     type: String,
     enum: ["Counsellor"],

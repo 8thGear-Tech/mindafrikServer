@@ -62,6 +62,11 @@ const counsellorSchema = new mongoose.Schema({
   discipline: String,
   experience: String,
   whyJoinUs: String,
+  roles: {
+    type: String,
+    enum: ["Counsellor"],
+    default: "Counsellor",
+  },
   //new
   // submittedAt: String,
 });

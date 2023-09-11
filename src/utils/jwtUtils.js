@@ -35,6 +35,29 @@ export function verifyToken(token) {
   }
 }
 
+// Middleware for checking user roles
+export const checkUserRole = (allowedRoles) => {
+  return (req, res, next) => {
+    const token = req.headers.authorization;
+    if (!token) {
+      return res.status(403).json({ message: "Access token not provided" });
+    }
+
+    try {
+      const decoded = verifyToken(token);
+      const userRoles = decoded.roles;
+
+      if (allowedRoles.includes(userRoles)) {
+        req.user = decoded;
+        next();
+      } else {
+        return res.status(403).json({ message: "Access forbidden" });
+      }
+    } catch (error) {
+      return res.status(401).json({ message: "Invalid token" });
+    }
+  };
+};
 //logout util
 // export function clearTokenCookie(res) {
 //   res.clearCookie("token");

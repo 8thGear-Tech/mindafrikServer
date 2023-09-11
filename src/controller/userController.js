@@ -171,9 +171,9 @@ const userController = {
     const tokenPayload = { email: newUser.email };
     const verificationToken = generateToken(tokenPayload);
 
-    const verificationLink = `https://mindafrikserver.onrender.com/user/verify-email?token=${verificationToken}`;
+    // const verificationLink = `https://mindafrikserver.onrender.com/user/verify-email?token=${verificationToken}`;
     // const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
-    sendVerificationEmail(req, newUser.email, verificationLink);
+    // sendVerificationEmail(req, newUser.email, verificationLink);
 
     res.status(201).json({
       message: "A new user has been created successfully",
@@ -183,7 +183,7 @@ const userController = {
       },
     });
   },
-  verifyEmailController: async (req, res) => {
+  verifyEEEmailController: async (req, res) => {
     const { token } = req.query;
     try {
       const decoded = verifyToken(token);
@@ -509,6 +509,41 @@ const userController = {
       },
     });
     // });
+  },
+  verifyEmailController: async (req, res) => {
+    const { token } = req.query;
+    try {
+      const decoded = verifyToken(token);
+      // const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const email = decoded.payload.email;
+
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found",
+          status: "Error",
+        });
+      }
+      if (user.isEmailVerified) {
+        return res.status(200).json({
+          message: "Email already verified",
+          status: "Success",
+        });
+      }
+
+      user.isEmailVerified = true;
+      await user.save();
+      res.redirect("https://www.mindafrik.com/email-verified");
+      // res.redirect("http://localhost:3000/email-verified");
+    } catch (error) {
+      console.error("Token validation failed:", error);
+      res.status(400).json({
+        message: "Invalid token",
+        status: "Error",
+        // error: error.message,
+      });
+    }
   },
 
   //latest

@@ -1,6 +1,8 @@
 import express from "express";
 import userController from "../controller/userController.js";
 import tryCatchHandler from "../utils/tryCatchHandler.js";
+import { checkUserRole } from "../utils/jwtUtils.js";
+// import checkUserRole from "../middleware/userAuthMiddleware.js";
 import roleAuthMiddleware from "../middleware/userAuthMiddleware.js";
 // import { upload } from "../controller/userController.js";
 import multer from "multer";
@@ -52,7 +54,11 @@ userRouter.patch(
 //   tryCatchHandler(userController.userLoginController)
 // );
 
-userRouter.post("/login", tryCatchHandler(userController.userLoginController));
+userRouter.post(
+  "/login",
+  checkUserRole(["Counsellor"]),
+  tryCatchHandler(userController.userLoginController)
+);
 userRouter.post(
   "/logout",
   tryCatchHandler(userController.userLogoutController)

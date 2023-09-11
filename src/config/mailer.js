@@ -71,7 +71,7 @@ export const sendVerificationEmail = async (
    Completing this step will ensure the accuracy and security of your profile. You'll soon be matched with clients seeking your expertise.
     </p>
     <p>
-    At MindAfrik, we value your dedication to making a positive impact. Should you encounter any issues or have questions, reach out to us at <a href="mailto:support@mindafrik.com">support@mindafrik.com</a> or <a href="tel:+23481331999533">081331999533</a>
+    At MindAfrik, we value your dedication to making a positive impact. Should you encounter any issues or have questions, reach out to us at <a href="mailto:support@mindafrik.com">support@mindafrik.com</a> or <a href="tel:+2348133199953">08133199953</a>
     </p>
     <p>
    We appreciate your commitment to providing exceptional counseling. Let's work together to create a supportive and healing environment for those in need.
@@ -131,7 +131,7 @@ export const newsletterSubscriptionEmail = async (req, email, firstName) => {
       Your engagement means a lot to us. 
     </p>
     <p>
-    Feel free to reach out at <a href="mailto:support@mindafrik.com">support@mindafrik.com</a> or <a href="tel:+23481331999533">081331999533</a> if you have any questions or need support.
+    Feel free to reach out at <a href="mailto:support@mindafrik.com">support@mindafrik.com</a> or <a href="tel:+2348133199953">08133199953</a> if you have any questions or need support.
     </p>
     <p>
       Thank you for allowing us to be part of your journey. We look forward to making a positive impact together.

@@ -315,7 +315,7 @@ const userController = {
       status: "Success",
       data: {
         user: user,
-        role: role,
+        role: user.role,
         access_token: access_token,
         // access_token: generateToken(user),
       },

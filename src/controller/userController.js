@@ -301,11 +301,12 @@ const userController = {
     if (!hash) throw new BadUserRequestError("incorrect password");
 
     res.status(200).json({
-      message: "COunsellor login successful",
+      message: "Counsellor login successful",
       status: "Success",
       data: {
         user: user,
         access_token: generateToken(user),
+        roles: ["Admin", "Counsellor", "Counsellee"],
       },
     });
   },

@@ -56,8 +56,7 @@ userRouter.patch(
 
 userRouter.post(
   "/login",
-  checkUserRole(["Counsellor"]),
-  checkUserRole(["Counsellee"]),
+  // checkUserRole(["Counsellee"]),
   tryCatchHandler(userController.userLoginController)
 );
 userRouter.post(

@@ -67,11 +67,17 @@ const counsellorSchema = new mongoose.Schema({
     default: false,
   },
   otp: Number,
-  roles: {
+  // roles: {
+  //   type: String,
+  //   enum: ["Counsellor"],
+  //   default: "Counsellor",
+  // },
+  role: {
     type: String,
-    enum: ["Counsellor"],
-    default: "Counsellor",
+    enum: ["Admin", "Counsellor", "Counsellee"],
+    default: "Counsellor", // Assuming default role for a counsellor
   },
+
   //new
   // submittedAt: String,
 });

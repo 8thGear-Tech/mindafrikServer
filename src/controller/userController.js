@@ -300,14 +300,15 @@ const userController = {
     const hash = bcrypt.compareSync(req.body.password, user.password);
     if (!hash) throw new BadUserRequestError("incorrect password");
 
-    const roles = user.roles;
+    // const roles = user.roles;
 
     res.status(200).json({
       message: "Counsellor login successful",
       status: "Success",
       data: {
         user: user,
-        roles: roles,
+        // roles: roles,
+        role: user.role,
         access_token: generateToken(user),
       },
     });
@@ -493,11 +494,13 @@ const userController = {
       discipline: discipline,
       experience: experience,
       whyJoinUs: whyJoinUs,
+      role: "Counsellor",
       // submittedAt: submittedAt,
     });
     newCounsellor.save();
 
-    const tokenPayload = { email: newCounsellor.email };
+    // const tokenPayload = { email: newCounsellor.email };
+    const tokenPayload = { email: newCounsellor.email, role: "Counsellor" };
     const verificationToken = generateToken(tokenPayload);
     const verificationLink = `https://mindafrikserver.onrender.com/user/verify-email?token=${verificationToken}`;
     // const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
@@ -524,6 +527,7 @@ const userController = {
       const decoded = verifyToken(token);
       // const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const email = decoded.payload.email;
+      const role = decoded.role;
 
       const user = await Counsellor.findOne({ email });
 

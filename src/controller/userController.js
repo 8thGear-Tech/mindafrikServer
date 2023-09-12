@@ -300,11 +300,14 @@ const userController = {
     const hash = bcrypt.compareSync(req.body.password, user.password);
     if (!hash) throw new BadUserRequestError("incorrect password");
     // Generate the access token and include it in the response
+
+    // const tokenPayload = { email: newCounsellor.email, role: "Counsellor" };
+    // const verificationToken = generateToken(tokenPayload);
     const tokenPayload = {
       userId: user._id,
       role: user.role,
     };
-    const accessToken = generateToken(tokenPayload);
+    const access_token = generateToken(tokenPayload);
     // const roles = user.roles;
 
     res.status(200).json({
@@ -312,8 +315,8 @@ const userController = {
       status: "Success",
       data: {
         user: user,
-        role: user.role,
-        access_token: accessToken,
+        role: role,
+        access_token: access_token,
         // access_token: generateToken(user),
       },
     });

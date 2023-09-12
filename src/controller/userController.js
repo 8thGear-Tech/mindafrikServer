@@ -287,7 +287,7 @@ const userController = {
   userLoginController: async (req, res) => {
     const { error } = userLoginValidator.validate(req.body);
     if (error) throw error;
-    const user = await User.findOne({
+    const user = await Counsellor.findOne({
       email: req.body?.email,
     });
     if (!user) throw new BadUserRequestError("Incorrect email");
@@ -301,7 +301,7 @@ const userController = {
     if (!hash) throw new BadUserRequestError("incorrect password");
 
     res.status(200).json({
-      message: "User login successful",
+      message: "COunsellor login successful",
       status: "Success",
       data: {
         user: user,
@@ -522,7 +522,7 @@ const userController = {
       // const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const email = decoded.payload.email;
 
-      const user = await User.findOne({ email });
+      const user = await Counsellor.findOne({ email });
 
       if (!user) {
         return res.status(404).json({

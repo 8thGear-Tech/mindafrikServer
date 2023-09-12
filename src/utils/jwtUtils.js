@@ -42,7 +42,6 @@ export const checkUserRole = (allowedRoles) => {
     if (!token) {
       return res.status(403).json({ message: "Access token not provided" });
     }
-
     try {
       const decoded = verifyToken(token);
       const userRoles = decoded.roles;

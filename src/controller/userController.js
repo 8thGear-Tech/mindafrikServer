@@ -1,7 +1,7 @@
 import express from "express";
 import session from "express-session";
-import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
+import MongoStore from "connect-mongo";
 import { BadUserRequestError, NotFoundError } from "../error/error.js";
 import { User, Counsellor } from "../model/userModel.js";
 import {
@@ -20,6 +20,8 @@ import { generateToken } from "../utils/jwtUtils.js";
 import { clearTokenCookie } from "../utils/jwtUtils.js";
 import { verifyToken } from "../utils/jwtUtils.js";
 import saveFileToGridFS from "./saveFileToGridFs.js";
+//multer
+import multer from "multer";
 
 dotenv.config({ path: "./configenv.env" });
 
@@ -27,7 +29,6 @@ const mongoURI = config.MONGODB_CONNECTION_URL;
 
 mongoose.connect(mongoURI);
 //multer
-import multer from "multer";
 const upload = multer({ dest: "uploads/" });
 
 // import multer from "multer";
@@ -328,17 +329,22 @@ const userController = {
 
     // sess.set("role", user.role);
     // sess.set("expires", Date.now() + 300000);
-    const mongoStore = MongoStore(session);
+    // const mongoStore = MongoStore(session);
+    const mongoStore = new MongoStore({
+      mongooseConnection: mongoose.connection, // Pass the Mongoose connection here
+      ttl: 7 * 24 * 60 * 60, // Session TTL (in seconds), adjust as needed
+    });
 
     const sess = {
       secret: process.env.SESSION_SECRET,
       resave: false, // Set resave to false
       saveUninitialized: true, // Set saveUninitialized to true
       // cookie: {},
-      store: new mongoStore({
-        mongooseConnection: mongoose.connection, // Pass the Mongoose connection here
-        ttl: 7 * 24 * 60 * 60, // Session TTL (in seconds), adjust as needed
-      }),
+      store: mongoStore,
+      // store: new mongoStore({
+      //   mongooseConnection: mongoose.connection, // Pass the Mongoose connection here
+      //   ttl: 7 * 24 * 60 * 60, // Session TTL (in seconds), adjust as needed
+      // }),
     };
 
     if (process.env.NODE_ENV === "production") {

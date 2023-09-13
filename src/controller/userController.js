@@ -1,4 +1,7 @@
 import express from "express";
+import mongoose from "mongoose";
+import MongoStore from "connect-mongo";
+import dotenv from "dotenv";
 import session from "express-session";
 import { BadUserRequestError, NotFoundError } from "../error/error.js";
 import { User, Counsellor } from "../model/userModel.js";
@@ -18,6 +21,16 @@ import { clearTokenCookie } from "../utils/jwtUtils.js";
 import { verifyToken } from "../utils/jwtUtils.js";
 import saveFileToGridFS from "./saveFileToGridFs.js";
 
+dotenv.config({ path: "./configenv.env" });
+
+const mongoURI = config.MONGODB_CONNECTION_URL;
+
+// Establish a connection to your MongoDB database
+mongoose.connect(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
 const app = express();
 
 app.use(
@@ -25,6 +38,10 @@ app.use(
     secret: "your_secret_key_here", // Replace with your own secret key
     resave: false,
     saveUninitialized: true,
+    store: MongoStore.create({
+      mongoUrl: mongoURI, // Replace with your MongoDB URL and database name
+      ttl: 3600, // Session TTL in seconds (1 hour in this example)
+    }),
     cookie: { maxAge: 3600000 }, // Set expiration time to 1 hour (in milliseconds)
   })
 );

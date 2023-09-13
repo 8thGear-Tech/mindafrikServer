@@ -313,25 +313,41 @@ const userController = {
     };
     const access_token = generateToken(tokenPayload);
     // const roles = user.roles;
-    const sess = session({
+    // const sess = session({
+    //   secret: process.env.SESSION_SECRET,
+    //   cookie: {
+    //     secure: true,
+    //   },
+    // });
+
+    // sess.set("role", user.role);
+    // sess.set("expires", Date.now() + 300000);
+    const sess = {
       secret: process.env.SESSION_SECRET,
-      cookie: {
-        secure: true,
-      },
-    });
+      cookie: {},
+    };
 
-    sess.set("role", user.role);
-    sess.set("expires", Date.now() + 300000);
+    if (process.env.NODE_ENV === "production") {
+      app.set("trust proxy", 1); // trust first proxy
+      sess.cookie.secure = true; // serve secure cookies
+    }
 
-    res.status(200).json({
-      message: "Counsellor login successful",
-      status: "Success",
-      data: {
-        user: user,
-        role: user.role,
-        access_token: access_token,
-        // access_token: generateToken(user),
-      },
+    const sessionMiddleware = session(sess);
+
+    sessionMiddleware(req, res, () => {
+      req.session.role = user.role;
+      req.session.expires = Date.now() + 300000;
+
+      res.status(200).json({
+        message: "Counsellor login successful",
+        status: "Success",
+        data: {
+          user: user,
+          role: user.role,
+          access_token: access_token,
+          // access_token: generateToken(user),
+        },
+      });
     });
   },
   // userLoginController: async (req, res) => {

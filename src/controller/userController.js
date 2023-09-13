@@ -35,7 +35,7 @@ app.use(
     secret: "your_secret_key_here", // Replace with your own secret key
     resave: false,
     saveUninitialized: true,
-    store: MongoStore.create({
+    store: new MongoStore({
       mongoUrl: mongoURI, // Replace with your MongoDB URL and database name
       ttl: 14 * 24 * 60 * 60, // = 14 days. Default
     }),

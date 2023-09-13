@@ -322,12 +322,13 @@ const userController = {
 
     // sess.set("role", user.role);
     // sess.set("expires", Date.now() + 300000);
+    const app = express();
     const sess = {
       secret: process.env.SESSION_SECRET,
       cookie: {},
     };
 
-    if (app.get(process.env.NODE_ENV) === "production") {
+    if (process.env.NODE_ENV === "production") {
       app.set("trust proxy", 1); // trust first proxy
       sess.cookie.secure = true; // serve secure cookies
     }

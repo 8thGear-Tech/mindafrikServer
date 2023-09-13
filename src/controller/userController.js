@@ -15,7 +15,11 @@ import { generateToken } from "../utils/jwtUtils.js";
 import { clearTokenCookie } from "../utils/jwtUtils.js";
 import { verifyToken } from "../utils/jwtUtils.js";
 import saveFileToGridFS from "./saveFileToGridFs.js";
+import session from "express-session";
 
+import dotenv from "dotenv";
+
+dotenv.config({ path: "./configenv.env" });
 //multer
 import multer from "multer";
 const upload = multer({ dest: "uploads/" });
@@ -309,6 +313,15 @@ const userController = {
     };
     const access_token = generateToken(tokenPayload);
     // const roles = user.roles;
+    const session = await session({
+      secret: process.env.SESSION_SECRET,
+      cookie: {
+        secure: true,
+      },
+    });
+
+    session.set("role", user.role);
+    session.set("expires", Date.now() + 300000);
 
     res.status(200).json({
       message: "Counsellor login successful",

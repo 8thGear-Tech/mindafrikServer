@@ -331,8 +331,9 @@ const userController = {
     // sess.set("expires", Date.now() + 300000);
     // const mongoStore = MongoStore(session);
     const mongoStore = new MongoStore({
+      mongoUrl: mongoURI,
       mongooseConnection: mongoose.connection, // Pass the Mongoose connection here
-      ttl: 7 * 24 * 60 * 60, // Session TTL (in seconds), adjust as needed
+      // ttl: 7 * 24 * 60 * 60, // Session TTL (in seconds), adjust as needed
     });
 
     const sess = {

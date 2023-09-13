@@ -21,9 +21,11 @@ import { clearTokenCookie } from "../utils/jwtUtils.js";
 import { verifyToken } from "../utils/jwtUtils.js";
 import saveFileToGridFS from "./saveFileToGridFs.js";
 
+dotenv.config({ path: "./configenv.env" });
+
 const mongoURI = config.MONGODB_CONNECTION_URL;
 
-dotenv.config({ path: "./configenv.env" });
+mongoose.connect(mongoURI);
 //multer
 import multer from "multer";
 const upload = multer({ dest: "uploads/" });
@@ -334,7 +336,7 @@ const userController = {
       saveUninitialized: true, // Set saveUninitialized to true
       // cookie: {},
       store: new mongoStore({
-        mongooseConnection: mongoose.connect(mongoURI), // Pass the Mongoose connection here
+        mongooseConnection: mongoose.connection, // Pass the Mongoose connection here
         ttl: 7 * 24 * 60 * 60, // Session TTL (in seconds), adjust as needed
       }),
     };

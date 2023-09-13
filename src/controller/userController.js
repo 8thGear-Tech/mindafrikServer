@@ -25,9 +25,35 @@ import multer from "multer";
 
 dotenv.config({ path: "./configenv.env" });
 
-const mongoURI = config.MONGODB_CONNECTION_URL;
+// const mongoURI = config.MONGODB_CONNECTION_URL;
 
-mongoose.connect(mongoURI);
+// mongoose.connect(mongoURI);
+const app = express();
+
+// Define Mongoose connection
+const mongoURI = config.MONGODB_CONNECTION_URL;
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+// Define session middleware
+const mongoStore = new MongoStore({
+  mongoUrl: mongoURI,
+  mongooseConnection: mongoose.connection,
+});
+
+const sess = {
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  store: mongoStore,
+};
+
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
+  sess.cookie.secure = true;
+}
+
+app.use(session(sess));
+app.use(express.json());
 //multer
 const upload = multer({ dest: "uploads/" });
 
@@ -330,47 +356,47 @@ const userController = {
     // sess.set("role", user.role);
     // sess.set("expires", Date.now() + 300000);
     // const mongoStore = MongoStore(session);
-    const mongoStore = new MongoStore({
-      mongoUrl: mongoURI,
-      // mongooseConnection: mongoose.connection, // Pass the Mongoose connection here
-      // ttl: 7 * 24 * 60 * 60, // Session TTL (in seconds), adjust as needed
+    // const mongoStore = new MongoStore({
+    //   mongoUrl: mongoURI,
+    //   // mongooseConnection: mongoose.connection, // Pass the Mongoose connection here
+    //   // ttl: 7 * 24 * 60 * 60, // Session TTL (in seconds), adjust as needed
+    // });
+
+    // const sess = {
+    //   secret: process.env.SESSION_SECRET,
+    //   resave: false, // Set resave to false
+    //   saveUninitialized: true, // Set saveUninitialized to true
+    //   // cookie: {},
+    //   store: mongoStore,
+    //   // store: new mongoStore({
+    //   //   mongooseConnection: mongoose.connection, // Pass the Mongoose connection here
+    //   //   ttl: 7 * 24 * 60 * 60, // Session TTL (in seconds), adjust as needed
+    //   // }),
+    // };
+
+    // if (process.env.NODE_ENV === "production") {
+    //   const app = express();
+    //   app.set("trust proxy", 1); // trust first proxy
+    //   sess.cookie.secure = true; // serve secure cookies
+    // }
+
+    // const sessionMiddleware = session(sess);
+
+    // sessionMiddleware(req, res, () => {
+    req.session.role = user.role;
+    req.session.expires = Date.now() + 300000;
+
+    res.status(200).json({
+      message: "Counsellor login successful",
+      status: "Success",
+      data: {
+        user: user,
+        role: user.role,
+        access_token: access_token,
+        // access_token: generateToken(user),
+      },
     });
-
-    const sess = {
-      secret: process.env.SESSION_SECRET,
-      resave: false, // Set resave to false
-      saveUninitialized: true, // Set saveUninitialized to true
-      // cookie: {},
-      store: mongoStore,
-      // store: new mongoStore({
-      //   mongooseConnection: mongoose.connection, // Pass the Mongoose connection here
-      //   ttl: 7 * 24 * 60 * 60, // Session TTL (in seconds), adjust as needed
-      // }),
-    };
-
-    if (process.env.NODE_ENV === "production") {
-      const app = express();
-      app.set("trust proxy", 1); // trust first proxy
-      sess.cookie.secure = true; // serve secure cookies
-    }
-
-    const sessionMiddleware = session(sess);
-
-    sessionMiddleware(req, res, () => {
-      req.session.role = user.role;
-      req.session.expires = Date.now() + 300000;
-
-      res.status(200).json({
-        message: "Counsellor login successful",
-        status: "Success",
-        data: {
-          user: user,
-          role: user.role,
-          access_token: access_token,
-          // access_token: generateToken(user),
-        },
-      });
-    });
+    // });
   },
   // userLoginController: async (req, res) => {
   //   const { error } = userLoginValidator.validate(req.body);

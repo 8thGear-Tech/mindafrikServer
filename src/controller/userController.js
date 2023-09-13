@@ -1,3 +1,5 @@
+import express from "express";
+import session from "express-session";
 import { BadUserRequestError, NotFoundError } from "../error/error.js";
 import { User, Counsellor } from "../model/userModel.js";
 import {
@@ -15,6 +17,17 @@ import { generateToken } from "../utils/jwtUtils.js";
 import { clearTokenCookie } from "../utils/jwtUtils.js";
 import { verifyToken } from "../utils/jwtUtils.js";
 import saveFileToGridFS from "./saveFileToGridFs.js";
+
+const app = express();
+
+app.use(
+  session({
+    secret: "your_secret_key_here", // Replace with your own secret key
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 3600000 }, // Set expiration time to 1 hour (in milliseconds)
+  })
+);
 
 //multer
 import multer from "multer";
@@ -299,6 +312,11 @@ const userController = {
     }
     const hash = bcrypt.compareSync(req.body.password, user.password);
     if (!hash) throw new BadUserRequestError("incorrect password");
+
+    // Set session variables
+    req.session.userId = user._id;
+    req.session.role = user.role;
+
     // Generate the access token and include it in the response
 
     // const tokenPayload = { email: newCounsellor.email, role: "Counsellor" };

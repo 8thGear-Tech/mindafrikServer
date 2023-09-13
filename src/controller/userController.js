@@ -1,3 +1,4 @@
+import express from "express";
 import session from "express-session";
 import { BadUserRequestError, NotFoundError } from "../error/error.js";
 import { User, Counsellor } from "../model/userModel.js";
@@ -322,13 +323,14 @@ const userController = {
 
     // sess.set("role", user.role);
     // sess.set("expires", Date.now() + 300000);
-    const app = express();
+
     const sess = {
       secret: process.env.SESSION_SECRET,
       cookie: {},
     };
 
     if (process.env.NODE_ENV === "production") {
+      const app = express();
       app.set("trust proxy", 1); // trust first proxy
       sess.cookie.secure = true; // serve secure cookies
     }

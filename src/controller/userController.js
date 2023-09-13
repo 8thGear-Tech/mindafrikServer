@@ -326,6 +326,8 @@ const userController = {
 
     const sess = {
       secret: process.env.SESSION_SECRET,
+      resave: false, // Set resave to false
+      saveUninitialized: true, // Set saveUninitialized to true
       cookie: {},
     };
 

@@ -26,10 +26,7 @@ dotenv.config({ path: "./configenv.env" });
 const mongoURI = config.MONGODB_CONNECTION_URL;
 
 // Establish a connection to your MongoDB database
-mongoose.connect(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(mongoURI);
 
 const app = express();
 
@@ -40,9 +37,9 @@ app.use(
     saveUninitialized: true,
     store: MongoStore.create({
       mongoUrl: mongoURI, // Replace with your MongoDB URL and database name
-      ttl: 3600, // Session TTL in seconds (1 hour in this example)
+      ttl: 14 * 24 * 60 * 60, // = 14 days. Default
     }),
-    cookie: { maxAge: 3600000 }, // Set expiration time to 1 hour (in milliseconds)
+    // cookie: { maxAge: 3600000 }, // Set expiration time to 1 hour (in milliseconds)
   })
 );
 

@@ -24,7 +24,7 @@ const app = express();
 // Middleware
 app.use(morgan("tiny"));
 app.use(express.json());
-app.use(cors());
+// app.use(cors());
 app.use(cookieParser());
 
 // Routes
@@ -47,6 +47,7 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
   );
+  console.log("CORS Middleware triggered");
   next();
 });
 // error handler

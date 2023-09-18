@@ -6,7 +6,7 @@ import { checkUserRole } from "../utils/jwtUtils.js";
 import roleAuthMiddleware from "../middleware/userAuthMiddleware.js";
 // import { upload } from "../controller/userController.js";
 import multer from "multer";
-import { verifyToken } from "../utils/jwtUtils.js";
+// import { verifyToken } from "../utils/jwtUtils.js";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -58,7 +58,7 @@ userRouter.patch(
 userRouter.post(
   "/login",
   // checkUserRole(["Counsellee"]),
-  verifyToken,
+  // verifyToken,
   tryCatchHandler(userController.userLoginController)
 );
 userRouter.post(

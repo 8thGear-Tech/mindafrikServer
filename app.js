@@ -21,6 +21,12 @@ mongoose
 const port = config.PORT;
 const app = express();
 
+app.use(
+  cors({
+    origin: "https://www.mindafrik.com",
+    // origin: "http://localhost:4000",
+  })
+);
 // Middleware
 app.use(morgan("tiny"));
 app.use(express.json());
@@ -32,24 +38,13 @@ app.use("/user", userRouter);
 app.use("/subscriber", newsletterRouter);
 app.use("/booking", bookSessionRouter);
 
-app.use(
-  cors({
-    origin: "https://www.mindafrik.com",
-    // origin: "http://localhost:4000",
-    credentials: true, // Make sure this option is set
-  })
-);
+// app.use(
+//   cors({
+//     origin: "https://www.mindafrik.com",
+//     // origin: "http://localhost:4000",
+//   })
+// );
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://www.mindafrik.com");
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  console.log("CORS Middleware triggered");
-  next();
-});
 // error handler
 app.use(globalErrorHandler);
 

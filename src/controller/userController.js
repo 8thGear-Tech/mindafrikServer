@@ -342,6 +342,12 @@ const userController = {
     const access_token = generateToken(tokenPayload);
     // const roles = user.roles;
 
+    // Set the token as an HTTP cookie
+    res.cookie("access_token", access_token, {
+      secure: true, // Set to true in production to ensure cookies are only sent over HTTPS
+      httpOnly: true, // Prevent client-side JavaScript from accessing the cookie
+    });
+
     res.status(200).json({
       message: "Counsellor login successful",
       status: "Success",

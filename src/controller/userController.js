@@ -342,14 +342,6 @@ const userController = {
     const access_token = generateToken(tokenPayload);
     // const roles = user.roles;
 
-    const tokenExpiration = 24 * 60 * 60 * 1000; // 24 hours
-    res.cookie("access_token", access_token, {
-      secure: true,
-      httpOnly: true,
-      maxAge: tokenExpiration, // Set an appropriate expiry time
-      // ...
-    });
-
     res.status(200).json({
       message: "Counsellor login successful",
       status: "Success",

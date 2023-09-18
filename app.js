@@ -3,7 +3,6 @@ import morgan from "morgan";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
-import cookieParser from "cookie-parser";
 import globalErrorHandler from "./src/utils/globalErrorHandler.js";
 import userRouter from "./src/router/userRoute.js";
 import newsletterRouter from "./src/router/newsletterRoute.js";
@@ -21,29 +20,22 @@ mongoose
 const port = config.PORT;
 const app = express();
 
-app.use(
-  cors({
-    origin: "https://www.mindafrik.com",
-    // origin: "http://localhost:4000",
-  })
-);
 // Middleware
 app.use(morgan("tiny"));
 app.use(express.json());
-// app.use(cors());
-app.use(cookieParser());
+app.use(cors());
 
 // Routes
 app.use("/user", userRouter);
 app.use("/subscriber", newsletterRouter);
 app.use("/booking", bookSessionRouter);
 
-// app.use(
-//   cors({
-//     origin: "https://www.mindafrik.com",
-//     // origin: "http://localhost:4000",
-//   })
-// );
+app.use(
+  cors({
+    origin: "https://www.mindafrik.com",
+    // origin: "http://localhost:4000",
+  })
+);
 
 // error handler
 app.use(globalErrorHandler);

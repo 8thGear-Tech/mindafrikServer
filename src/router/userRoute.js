@@ -57,9 +57,21 @@ userRouter.patch(
 
 userRouter.post(
   "/login",
+  tryCatchHandler(async (req, res) => {
+    // Your login logic here
+    // This may include calling the userLoginController function from userController.js
+
+    // Set the Access-Control-Allow-Credentials header in the response
+    res.header("Access-Control-Allow-Credentials", "true");
+
+    // Call the userLoginController function
+    await userController.userLoginController(req, res);
+
+    // You may add more response handling code if needed
+  })
   // checkUserRole(["Counsellee"]),
   // verifyToken,
-  tryCatchHandler(userController.userLoginController)
+  // tryCatchHandler(userController.userLoginController)
 );
 userRouter.post(
   "/logout",

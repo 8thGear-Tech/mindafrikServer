@@ -350,9 +350,6 @@ const userController = {
       // ...
     });
 
-    // Set the Access-Control-Allow-Credentials header
-    res.header("Access-Control-Allow-Credentials", "true");
-
     res.status(200).json({
       message: "Counsellor login successful",
       status: "Success",

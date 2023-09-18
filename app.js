@@ -36,6 +36,7 @@ app.use(
   cors({
     origin: "https://www.mindafrik.com",
     // origin: "http://localhost:4000",
+    credentials: true, // Make sure this option is set
   })
 );
 

@@ -342,10 +342,12 @@ const userController = {
     const access_token = generateToken(tokenPayload);
     // const roles = user.roles;
 
-    // Set the token as an HTTP cookie
+    const tokenExpiration = 24 * 60 * 60 * 1000; // 24 hours
     res.cookie("access_token", access_token, {
-      secure: true, // Set to true in production to ensure cookies are only sent over HTTPS
-      httpOnly: true, // Prevent client-side JavaScript from accessing the cookie
+      secure: true,
+      httpOnly: true,
+      maxAge: tokenExpiration, // Set an appropriate expiry time
+      // ...
     });
 
     res.status(200).json({

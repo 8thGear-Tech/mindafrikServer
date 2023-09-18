@@ -345,7 +345,7 @@ const userController = {
     const tokenExpiration = 24 * 60 * 60 * 1000; // 24 hours
     res.cookie("access_token", access_token, {
       secure: true,
-      httpOnly: true,
+      httpOnly: false,
       maxAge: tokenExpiration, // Set an appropriate expiry time
       // ...
     });

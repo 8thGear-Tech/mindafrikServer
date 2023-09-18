@@ -349,6 +349,7 @@ const userController = {
       maxAge: tokenExpiration, // Set an appropriate expiry time
       // ...
     });
+    console.log("Token set:", access_token);
 
     res.status(200).json({
       message: "Counsellor login successful",

@@ -3,6 +3,7 @@ import morgan from "morgan";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import globalErrorHandler from "./src/utils/globalErrorHandler.js";
 import userRouter from "./src/router/userRoute.js";
 import newsletterRouter from "./src/router/newsletterRoute.js";
@@ -24,6 +25,7 @@ const app = express();
 app.use(morgan("tiny"));
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser());
 
 // Routes
 app.use("/user", userRouter);

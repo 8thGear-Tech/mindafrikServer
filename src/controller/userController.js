@@ -35,7 +35,7 @@ app.use(
     secret: "your_secret_key_here", // Replace with your own secret key
     resave: false,
     saveUninitialized: true,
-    store: new MongoStore({
+    store: MongoStore.create({
       mongoUrl: mongoURI, // Replace with your MongoDB URL and database name
       ttl: 14 * 24 * 60 * 60, // = 14 days. Default
     }),
@@ -328,8 +328,8 @@ const userController = {
     if (!hash) throw new BadUserRequestError("incorrect password");
 
     // Set session variables
-    req.session.userId = user._id;
-    req.session.role = user.role;
+    // req.session.userId = user._id;
+    // req.session.role = user.role;
 
     // Generate the access token and include it in the response
 

@@ -1,5 +1,6 @@
 import express from "express";
 import session from "express-session";
+import MongoStore from "connect-mongo";
 import morgan from "morgan";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
@@ -22,11 +23,19 @@ const port = config.PORT;
 const app = express();
 
 //express session
+
+const store = MongoStore.create({
+  mongoUrl: config.MONGODB_CONNECTION_URL, // Replace with your MongoDB connection URL
+  // mongoUrl: "mongodb://localhost:27017/your_database_name", // Replace with your MongoDB connection URL
+  // ttl: 14 * 24 * 60 * 60, // Session will expire after 14 days
+});
+
 const sess = {
   secret: "YOUR_SESSION_SECRET",
   resave: false,
   saveUninitialized: true,
   cookie: {},
+  store: store,
 };
 
 if (process.env.NODE_ENV === "production") {

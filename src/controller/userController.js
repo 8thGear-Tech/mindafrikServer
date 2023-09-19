@@ -1,8 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
-import MongoStore from "connect-mongo";
+// import MongoStore from "connect-mongo";
 import dotenv from "dotenv";
-import session from "express-session";
+// import session from "express-session";
 import { BadUserRequestError, NotFoundError } from "../error/error.js";
 import { User, Counsellor } from "../model/userModel.js";
 import {
@@ -30,18 +30,18 @@ mongoose.connect(mongoURI);
 
 const app = express();
 
-app.use(
-  session({
-    secret: "your_secret_key_here", // Replace with your own secret key
-    resave: false,
-    saveUninitialized: true,
-    store: MongoStore.create({
-      mongoUrl: mongoURI, // Replace with your MongoDB URL and database name
-      ttl: 14 * 24 * 60 * 60, // = 14 days. Default
-    }),
-    // cookie: { maxAge: 3600000 }, // Set expiration time to 1 hour (in milliseconds)
-  })
-);
+// app.use(
+//   session({
+//     secret: "your_secret_key_here", // Replace with your own secret key
+//     resave: false,
+//     saveUninitialized: true,
+//     store: MongoStore.create({
+//       mongoUrl: mongoURI, // Replace with your MongoDB URL and database name
+//       ttl: 14 * 24 * 60 * 60, // = 14 days. Default
+//     }),
+//     // cookie: { maxAge: 3600000 }, // Set expiration time to 1 hour (in milliseconds)
+//   })
+// );
 
 //multer
 import multer from "multer";
@@ -348,8 +348,8 @@ const userController = {
 
     // Set the session cookie.
     // res.cookie("session", req.sessionID, sess.cookie);
-    const userSession = { email: user.email }; // creating user session to keep user loggedin also on refresh
-    req.session.user = userSession; // attach user session to session object from express-session
+    // const userSession = { email: user.email }; // creating user session to keep user loggedin also on refresh
+    // req.session.user = userSession; // attach user session to session object from express-session
     // req.session.user = user;
     // // Create a session object for the user.
     // req.session.user = {
@@ -357,7 +357,7 @@ const userController = {
     // };
     res.status(200).json({
       message: "Counsellor login successful",
-      userSession,
+      // userSession,
       status: "Success",
       data: {
         user: user,

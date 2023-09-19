@@ -57,6 +57,7 @@ app.use("/booking", bookSessionRouter);
 app.use(
   cors({
     origin: "https://www.mindafrik.com",
+    credentials: true,
     // origin: "http://localhost:4000",
   })
 );

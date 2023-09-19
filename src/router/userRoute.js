@@ -62,7 +62,8 @@ userRouter.post(
     // This may include calling the userLoginController function from userController.js
 
     // Set the Access-Control-Allow-Credentials header in the response
-    res.header("Access-Control-Allow-Credentials", "true");
+    // res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Access-Control-Allow-Origin", "https://www.mindafrik.com");
 
     // Call the userLoginController function
     await userController.userLoginController(req, res);

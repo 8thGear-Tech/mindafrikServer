@@ -1,4 +1,5 @@
 import express from "express";
+import session from "express-session";
 import morgan from "morgan";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
@@ -19,6 +20,20 @@ mongoose
   .catch((err) => console.log(err.message));
 const port = config.PORT;
 const app = express();
+
+//express session
+const sess = {
+  secret: "YOUR_SESSION_SECRET",
+  resave: false,
+  saveUninitialized: true,
+  cookie: {},
+};
+
+if (process.env.NODE_ENV === "production") {
+  sess.cookie.secure = true; // serve secure cookies
+}
+
+app.use(session(sess));
 
 // Middleware
 app.use(morgan("tiny"));

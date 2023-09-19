@@ -330,20 +330,34 @@ const userController = {
     // Set session variables
     // req.session.userId = user._id;
     // req.session.role = user.role;
-
+    // Create a session object for the user.
+    req.session.user = {
+      userId: user._id,
+      role: user.role,
+    };
     // Generate the access token and include it in the response
 
     // const tokenPayload = { email: newCounsellor.email, role: "Counsellor" };
     // const verificationToken = generateToken(tokenPayload);
-    const tokenPayload = {
-      userId: user._id,
-      role: user.role,
-    };
+    // const tokenPayload = {
+    //   userId: user._id,
+    //   role: user.role,
+    // };
     const access_token = generateToken(tokenPayload);
     // const roles = user.roles;
 
+    // Set the session cookie.
+    // res.cookie("session", req.sessionID, sess.cookie);
+    const userSession = { email: user.email }; // creating user session to keep user loggedin also on refresh
+    req.session.user = userSession; // attach user session to session object from express-session
+    // req.session.user = user;
+    // // Create a session object for the user.
+    // req.session.user = {
+    //   email,
+    // };
     res.status(200).json({
       message: "Counsellor login successful",
+      userSession,
       status: "Success",
       data: {
         user: user,

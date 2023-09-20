@@ -27,14 +27,17 @@ const app = express();
 const store = MongoStore.create({
   mongoUrl: config.MONGODB_CONNECTION_URL, // Replace with your MongoDB connection URL
   // mongoUrl: "mongodb://localhost:27017/your_database_name", // Replace with your MongoDB connection URL
-  ttl: 14 * 24 * 60 * 60, // Session will expire after 14 days
+  // ttl: 14 * 24 * 60 * 60, // Session will expire after 14 days
 });
 
 const sess = {
-  secret: "YOUR_SESSION_SECRET",
+  secret: process.env.PRODUCTION_JWT_SECRET,
   resave: false,
   saveUninitialized: true,
-  cookie: {},
+  // cookie: {},
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 30, // Set the session expiration time (in this example, 30 days)
+  },
   store: store,
 };
 
@@ -43,11 +46,6 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.use(session(sess));
-
-// Middleware
-app.use(morgan("tiny"));
-app.use(express.json());
-// app.use(cors());
 
 app.use(
   cors({
@@ -59,6 +57,10 @@ app.use(
     // origin: "http://localhost:4000",
   })
 );
+// Middleware
+app.use(morgan("tiny"));
+app.use(express.json());
+// app.use(cors());
 
 // Routes
 app.use("/user", userRouter);

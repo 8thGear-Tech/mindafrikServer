@@ -1,6 +1,6 @@
 import express from "express";
-import session from "express-session";
-import MongoStore from "connect-mongo";
+// import session from "express-session";
+// import MongoStore from "connect-mongo";
 import morgan from "morgan";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
@@ -24,34 +24,34 @@ const app = express();
 
 //express session
 
-const store = MongoStore.create({
-  mongoUrl: config.MONGODB_CONNECTION_URL, // Replace with your MongoDB connection URL
-  // mongoUrl: "mongodb://localhost:27017/your_database_name", // Replace with your MongoDB connection URL
-  // ttl: 14 * 24 * 60 * 60, // Session will expire after 14 days
-});
+// const store = MongoStore.create({
+//   mongoUrl: config.MONGODB_CONNECTION_URL, // Replace with your MongoDB connection URL
+//   // mongoUrl: "mongodb://localhost:27017/your_database_name", // Replace with your MongoDB connection URL
+//   // ttl: 14 * 24 * 60 * 60, // Session will expire after 14 days
+// });
 
-const sess = {
-  secret: process.env.PRODUCTION_JWT_SECRET,
-  resave: false,
-  saveUninitialized: true,
-  // cookie: {},
-  cookie: {
-    maxAge: 3600000, // Set the session to expire after 1 hour (adjust as needed)
-    secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-    httpOnly: true, // Mitigate XSS attacks
-    // sameSite: "strict", // Prevent CSRF attacks
-  },
-  store: store,
-};
-if (process.env.NODE_ENV === "production") {
-  app.set("trust proxy", 1); // Trust the first proxy
-  sess.cookie.secure = true; // Serve secure cookies
-}
+// const sess = {
+//   secret: process.env.PRODUCTION_JWT_SECRET,
+//   resave: false,
+//   saveUninitialized: true,
+//   // cookie: {},
+//   cookie: {
+//     maxAge: 3600000, // Set the session to expire after 1 hour (adjust as needed)
+//     secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+//     httpOnly: true, // Mitigate XSS attacks
+//     // sameSite: "strict", // Prevent CSRF attacks
+//   },
+//   store: store,
+// };
+// if (process.env.NODE_ENV === "production") {
+//   app.set("trust proxy", 1); // Trust the first proxy
+//   sess.cookie.secure = true; // Serve secure cookies
+// }
 // if (process.env.NODE_ENV === "production") {
 //   sess.cookie.secure = true; // serve secure cookies
 // }
 
-app.use(session(sess));
+// app.use(session(sess));
 
 app.use(
   cors({

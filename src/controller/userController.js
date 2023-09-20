@@ -331,10 +331,10 @@ const userController = {
     // req.session.userId = user._id;
     // req.session.role = user.role;
     // Create a session object for the user.
-    req.session.user = {
-      userId: user._id,
-      role: user.role,
-    };
+    // req.session.user = {
+    //   userId: user._id,
+    //   role: user.role,
+    // };
     // Generate the access token and include it in the response
 
     // const tokenPayload = { email: newCounsellor.email, role: "Counsellor" };
@@ -345,12 +345,12 @@ const userController = {
       email: user.email,
     };
     const access_token = generateToken(tokenPayload);
-    res.cookie("access_token", access_token, {
-      maxAge: 3600000, // Set the cookie to expire after 1 hour (adjust as needed)
-      httpOnly: true, // Prevent JavaScript access to the cookie
-      secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-      // sameSite: "strict", // Prevent CSRF attacks
-    });
+    // res.cookie("access_token", access_token, {
+    //   maxAge: 3600000, // Set the cookie to expire after 1 hour (adjust as needed)
+    //   httpOnly: true, // Prevent JavaScript access to the cookie
+    //   secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+    //   // sameSite: "strict", // Prevent CSRF attacks
+    // });
     // const roles = user.roles;
 
     // Set the session cookie.

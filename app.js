@@ -39,7 +39,7 @@ const sess = {
     maxAge: 3600000, // Set the session to expire after 1 hour (adjust as needed)
     secure: process.env.NODE_ENV === "production", // Use secure cookies in production
     httpOnly: true, // Mitigate XSS attacks
-    sameSite: "strict", // Prevent CSRF attacks
+    // sameSite: "strict", // Prevent CSRF attacks
   },
   store: store,
 };

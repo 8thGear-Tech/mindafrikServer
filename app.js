@@ -27,7 +27,7 @@ const app = express();
 const store = MongoStore.create({
   mongoUrl: config.MONGODB_CONNECTION_URL, // Replace with your MongoDB connection URL
   // mongoUrl: "mongodb://localhost:27017/your_database_name", // Replace with your MongoDB connection URL
-  // ttl: 14 * 24 * 60 * 60, // Session will expire after 14 days
+  ttl: 14 * 24 * 60 * 60, // Session will expire after 14 days
 });
 
 const sess = {

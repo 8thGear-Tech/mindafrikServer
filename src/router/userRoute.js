@@ -55,25 +55,7 @@ userRouter.patch(
 //   tryCatchHandler(userController.userLoginController)
 // );
 
-userRouter.post(
-  "/login",
-  tryCatchHandler(async (req, res) => {
-    // Your login logic here
-    // This may include calling the userLoginController function from userController.js
-
-    // Set the Access-Control-Allow-Credentials header in the response
-    // res.header("Access-Control-Allow-Credentials", "true");
-    res.header("Access-Control-Allow-Origin", "https://www.mindafrik.com");
-
-    // Call the userLoginController function
-    await userController.userLoginController(req, res);
-
-    // You may add more response handling code if needed
-  })
-  // checkUserRole(["Counsellee"]),
-  // verifyToken,
-  // tryCatchHandler(userController.userLoginController)
-);
+userRouter.post("/login", tryCatchHandler(userController.userLoginController));
 userRouter.post(
   "/logout",
   tryCatchHandler(userController.userLogoutController)

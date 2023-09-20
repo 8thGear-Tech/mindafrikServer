@@ -49,11 +49,6 @@ app.use(morgan("tiny"));
 app.use(express.json());
 // app.use(cors());
 
-// Routes
-app.use("/user", userRouter);
-app.use("/subscriber", newsletterRouter);
-app.use("/booking", bookSessionRouter);
-
 app.use(
   cors({
     origin: "https://www.mindafrik.com",
@@ -64,6 +59,11 @@ app.use(
     // origin: "http://localhost:4000",
   })
 );
+
+// Routes
+app.use("/user", userRouter);
+app.use("/subscriber", newsletterRouter);
+app.use("/booking", bookSessionRouter);
 
 // app.use((req, res, next) => {
 //   res.setHeader("Access-Control-Allow-Origin", "https://www.mindafrik.com");

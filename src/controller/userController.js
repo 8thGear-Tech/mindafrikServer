@@ -342,6 +342,7 @@ const userController = {
     const tokenPayload = {
       userId: user._id,
       role: user.role,
+      email: user.email,
     };
     const access_token = generateToken(tokenPayload);
     res.cookie("access_token", access_token, {
@@ -368,6 +369,7 @@ const userController = {
       data: {
         user: user,
         role: user.role,
+        // email: user.email,
         access_token: access_token,
         // access_token: generateToken(user),
       },

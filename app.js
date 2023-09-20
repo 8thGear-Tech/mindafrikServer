@@ -36,14 +36,20 @@ const sess = {
   saveUninitialized: true,
   // cookie: {},
   cookie: {
-    maxAge: 1000 * 60 * 60 * 24 * 30, // Set the session expiration time (in this example, 30 days)
+    maxAge: 3600000, // Set the session to expire after 1 hour (adjust as needed)
+    secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+    httpOnly: true, // Mitigate XSS attacks
+    sameSite: "strict", // Prevent CSRF attacks
   },
   store: store,
 };
-
 if (process.env.NODE_ENV === "production") {
-  sess.cookie.secure = true; // serve secure cookies
+  app.set("trust proxy", 1); // Trust the first proxy
+  sess.cookie.secure = true; // Serve secure cookies
 }
+// if (process.env.NODE_ENV === "production") {
+//   sess.cookie.secure = true; // serve secure cookies
+// }
 
 app.use(session(sess));
 

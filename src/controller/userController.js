@@ -339,10 +339,10 @@ const userController = {
 
     // const tokenPayload = { email: newCounsellor.email, role: "Counsellor" };
     // const verificationToken = generateToken(tokenPayload);
-    // const tokenPayload = {
-    //   userId: user._id,
-    //   role: user.role,
-    // };
+    const tokenPayload = {
+      userId: user._id,
+      role: user.role,
+    };
     const access_token = generateToken(tokenPayload);
     // const roles = user.roles;
 

@@ -363,22 +363,31 @@ const userController = {
     //   email,
     // };
 
-    // Assuming you have a function to verify tokens
-    const decodedToken = verifyToken(access_token, config.jwt_secret_key);
+    // Verify the access token
+    try {
+      const decodedToken = verifyToken(access_token, config.jwt_secret_key);
 
-    // If the token verification succeeds, you can proceed
-    if (decodedToken) {
-      res.status(200).json({
-        message: "Counsellor login successful",
-        status: "Success",
-        data: {
-          user: user,
-          role: user.role,
-          access_token: access_token,
-        },
-      });
-    } else {
-      // Token verification failed
+      if (decodedToken) {
+        res.status(200).json({
+          message: "Counsellor login successful",
+          status: "Success",
+          data: {
+            user: user,
+            role: user.role,
+            access_token: access_token,
+          },
+        });
+      } else {
+        // Token verification failed
+        res.status(401).json({
+          message: "Unauthorized",
+          status: "Error",
+          error: "Invalid token",
+        });
+      }
+    } catch (error) {
+      // An error occurred during token verification
+      console.error("Error during token verification:", error);
       res.status(401).json({
         message: "Unauthorized",
         status: "Error",
@@ -386,6 +395,29 @@ const userController = {
       });
     }
   },
+  // Assuming you have a function to verify tokens
+  //   const decodedToken = verifyToken(access_token, config.jwt_secret_key);
+
+  //   // If the token verification succeeds, you can proceed
+  //   if (decodedToken) {
+  //     res.status(200).json({
+  //       message: "Counsellor login successful",
+  //       status: "Success",
+  //       data: {
+  //         user: user,
+  //         role: user.role,
+  //         access_token: access_token,
+  //       },
+  //     });
+  //   } else {
+  //     // Token verification failed
+  //     res.status(401).json({
+  //       message: "Unauthorized",
+  //       status: "Error",
+  //       error: "Invalid token",
+  //     });
+  //   }
+  // },
   //START
   //   res.status(200).json({
   //     message: "Counsellor login successful",

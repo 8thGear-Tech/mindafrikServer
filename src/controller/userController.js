@@ -362,19 +362,46 @@ const userController = {
     // req.session.user = {
     //   email,
     // };
-    res.status(200).json({
-      message: "Counsellor login successful",
-      // userSession,
-      status: "Success",
-      data: {
-        user: user,
-        role: user.role,
-        // email: user.email,
-        access_token: access_token,
-        // access_token: generateToken(user),
-      },
-    });
+
+    // Assuming you have a function to verify tokens
+    const decodedToken = verifyToken(access_token, config.jwt_secret_key);
+
+    // If the token verification succeeds, you can proceed
+    if (decodedToken) {
+      res.status(200).json({
+        message: "Counsellor login successful",
+        status: "Success",
+        data: {
+          user: user,
+          role: user.role,
+          access_token: access_token,
+        },
+      });
+    } else {
+      // Token verification failed
+      res.status(401).json({
+        message: "Unauthorized",
+        status: "Error",
+        error: "Invalid token",
+      });
+    }
   },
+  //START
+  //   res.status(200).json({
+  //     message: "Counsellor login successful",
+  //     // userSession,
+  //     status: "Success",
+  //     data: {
+  //       user: user,
+  //       role: user.role,
+  //       // email: user.email,
+  //       access_token: access_token,
+  //       // access_token: generateToken(user),
+  //     },
+  //   });
+  // },
+
+  //STOP
   // userLoginController: async (req, res) => {
   //   const { error } = userLoginValidator.validate(req.body);
   //   if (error) throw error;

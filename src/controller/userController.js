@@ -327,9 +327,6 @@ const userController = {
     const hash = bcrypt.compareSync(req.body.password, user.password);
     if (!hash) throw new BadUserRequestError("incorrect password");
 
-    // Declare userRole here in the outer scope
-    let userRole;
-
     // Set session variables
     // req.session.userId = user._id;
     // req.session.role = user.role;
@@ -373,6 +370,9 @@ const userController = {
     try {
       // Verify the access token
       const decodedToken = verifyToken(access_token, config.jwt_secret_key);
+
+      console.log("Decoded Token:", decodedToken);
+
       //  const decoded = verifyToken(token);
       //  // const decoded = jwt.verify(token, process.env.JWT_SECRET);
       //  const email = decoded.payload.email;
@@ -380,7 +380,7 @@ const userController = {
 
       if (decodedToken) {
         // Extract the user role from the decoded token
-        userRole = decodedToken.role;
+        const userRole = decodedToken.role;
         console.log("Role:", userRole);
 
         res.status(200).json({

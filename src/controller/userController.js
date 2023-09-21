@@ -367,16 +367,69 @@ const userController = {
     //   email,
     // };
 
+    //   try {
+    //     // Verify the access token
+    //     const decodedToken = verifyToken(access_token, config.jwt_secret_key);
+
+    //     console.log("Decoded Token:", decodedToken);
+
+    //     //  const decoded = verifyToken(token);
+    //     //  // const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    //     //  const email = decoded.payload.email;
+    //     //  const role = decoded.role;
+
+    //     if (decodedToken) {
+    //       // Extract the user role from the decoded token
+    //       const userRole = decodedToken.payload.role;
+    //       console.log("Role:", userRole);
+
+    //       res.status(200).json({
+    //         message: "Counsellor login successful",
+    //         status: "Success",
+    //         data: {
+    //           user: user,
+    //           role: userRole, // Send the role obtained from the token
+    //           access_token: access_token,
+    //         },
+    //       });
+    //     } else {
+    //       // Token verification failed
+    //       res.status(401).json({
+    //         message: "Unauthorized",
+    //         status: "Error",
+    //         error: "Invalid token",
+    //       });
+    //     }
+    //   } catch (error) {
+    //     // An error occurred during token verification
+    //     console.error("Error during token verification:", error);
+    //     res.status(401).json({
+    //       message: "Unauthorized",
+    //       status: "Error",
+    //       error: "Invalid token",
+    //     });
+    //   }
+    // },
+
+    res.status(200).json({
+      message: "Counsellor login successful",
+      // userSession,
+      status: "Success",
+      data: {
+        user: user,
+        role: user.role,
+        // email: user.email,
+        access_token: access_token,
+        // access_token: generateToken(user),
+      },
+    });
+  },
+  verifyLoginTokenController: async (req, res) => {
+    const { access_token } = req.body;
+
     try {
       // Verify the access token
       const decodedToken = verifyToken(access_token, config.jwt_secret_key);
-
-      console.log("Decoded Token:", decodedToken);
-
-      //  const decoded = verifyToken(token);
-      //  // const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      //  const email = decoded.payload.email;
-      //  const role = decoded.role;
 
       if (decodedToken) {
         // Extract the user role from the decoded token
@@ -384,12 +437,10 @@ const userController = {
         console.log("Role:", userRole);
 
         res.status(200).json({
-          message: "Counsellor login successful",
+          message: "Token decoded successfully",
           status: "Success",
           data: {
-            user: user,
-            role: userRole, // Send the role obtained from the token
-            access_token: access_token,
+            role: userRole,
           },
         });
       } else {

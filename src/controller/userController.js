@@ -345,7 +345,11 @@ const userController = {
       email: user.email,
     };
     const access_token = generateToken(tokenPayload);
+    // Log the access token to check if it contains the correct role
+    console.log("Access Token:", access_token);
+
     // res.cookie("access_token", access_token, {
+    //
     //   maxAge: 3600000, // Set the cookie to expire after 1 hour (adjust as needed)
     //   httpOnly: true, // Prevent JavaScript access to the cookie
     //   secure: process.env.NODE_ENV === "production", // Use secure cookies in production
@@ -366,6 +370,10 @@ const userController = {
     try {
       // Verify the access token
       const decodedToken = verifyToken(access_token, config.jwt_secret_key);
+      //  const decoded = verifyToken(token);
+      //  // const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      //  const email = decoded.payload.email;
+      //  const role = decoded.role;
 
       if (decodedToken) {
         // Extract the user role from the decoded token

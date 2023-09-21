@@ -14,7 +14,8 @@ import config from "../config/index.js";
 // }
 export const generateToken = (payload) => {
   try {
-    const expiresIn = "7d"; // Token expires in 1 day
+    // const expiresIn = "7d"; // Token expires in 1 day
+    const expiresIn = Math.floor(Date.now() / 1000) + 60 * 60;
     const token = jwt.sign({ payload }, config.jwt_secret_key, {
       expiresIn,
     });

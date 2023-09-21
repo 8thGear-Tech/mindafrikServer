@@ -327,6 +327,9 @@ const userController = {
     const hash = bcrypt.compareSync(req.body.password, user.password);
     if (!hash) throw new BadUserRequestError("incorrect password");
 
+    // Declare userRole here in the outer scope
+    let userRole;
+
     // Set session variables
     // req.session.userId = user._id;
     // req.session.role = user.role;
@@ -377,7 +380,7 @@ const userController = {
 
       if (decodedToken) {
         // Extract the user role from the decoded token
-        const userRole = decodedToken.role;
+        userRole = decodedToken.role;
         console.log("Role:", userRole);
 
         res.status(200).json({

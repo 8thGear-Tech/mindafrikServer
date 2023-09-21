@@ -380,7 +380,7 @@ const userController = {
 
       if (decodedToken) {
         // Extract the user role from the decoded token
-        const userRole = decodedToken.role;
+        const userRole = decodedToken.payload.role;
         console.log("Role:", userRole);
 
         res.status(200).json({

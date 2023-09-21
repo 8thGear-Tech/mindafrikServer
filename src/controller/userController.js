@@ -345,7 +345,7 @@ const userController = {
       email: user.email,
     };
     // const access_token = generateToken(tokenPayload);
-    const access_token = generateToken(tokenPayload, { expiresIn: "7d" }); // Expires in 7 days
+    const access_token = generateToken(tokenPayload); // Expires in 7 days
 
     // Log the access token to check if it contains the correct role
     console.log("Access Token:", access_token);

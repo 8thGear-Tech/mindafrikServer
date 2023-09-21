@@ -344,7 +344,9 @@ const userController = {
       role: user.role,
       email: user.email,
     };
-    const access_token = generateToken(tokenPayload);
+    // const access_token = generateToken(tokenPayload);
+    const access_token = generateToken(tokenPayload, { expiresIn: "7d" }); // Expires in 7 days
+
     // Log the access token to check if it contains the correct role
     console.log("Access Token:", access_token);
 
@@ -426,9 +428,7 @@ const userController = {
   },
   verifyLoginTokenController: async (req, res) => {
     const { access_token } = req.body;
-
     try {
-      // Verify the access token
       const decodedToken = verifyToken(access_token, config.jwt_secret_key);
 
       if (decodedToken) {
@@ -452,13 +452,20 @@ const userController = {
         });
       }
     } catch (error) {
-      // An error occurred during token verification
-      console.error("Error during token verification:", error);
-      res.status(401).json({
-        message: "Unauthorized",
-        status: "Error",
-        error: "Invalid token",
-      });
+      if (error.name === "TokenExpiredError") {
+        res.status(401).json({
+          message: "Unauthorized",
+          status: "Error",
+          error: "Token has expired",
+        });
+      } else {
+        console.error("Error during token verification:", error);
+        res.status(401).json({
+          message: "Unauthorized",
+          status: "Error",
+          error: "Invalid token",
+        });
+      }
     }
   },
 

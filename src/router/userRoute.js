@@ -56,10 +56,10 @@ userRouter.patch(
 // );
 
 userRouter.post("/login", tryCatchHandler(userController.userLoginController));
-userRouter.get(
-  "/decode-token",
-  tryCatchHandler(userController.verifyLoginTokenController)
-);
+// userRouter.get(
+//   "/decode-token",
+//   tryCatchHandler(userController.verifyLoginTokenController)
+// );
 userRouter.post(
   "/logout",
   tryCatchHandler(userController.userLogoutController)

@@ -343,7 +343,7 @@ const userController = {
     user.refresh_token = refresh_token;
     const result = await user.save();
     console.log(result);
-    console.log(role);
+    console.log(user.role);
 
     // Send both tokens to the client
     // res.cookie("refresh_token", refresh_token, {

@@ -392,6 +392,7 @@ const userController = {
             user: user,
             role: userRole, // Send the role obtained from the token
             access_token: access_token,
+            decodedToken: decodedToken,
           },
         });
       } else {

@@ -56,6 +56,10 @@ userRouter.patch(
 // );
 
 userRouter.post("/login", tryCatchHandler(userController.userLoginController));
+userRouter.get(
+  "/refresh-token",
+  tryCatchHandler(userController.handleRefreshToken)
+);
 // userRouter.get(
 //   "/decode-token",
 //   tryCatchHandler(userController.verifyLoginTokenController)

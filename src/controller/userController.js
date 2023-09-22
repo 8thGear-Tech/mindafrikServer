@@ -318,7 +318,6 @@ const userController = {
       email: req.body?.email,
     });
     if (!user) throw new BadUserRequestError("Incorrect email");
-    // const emailExists = await User.findOne({ email });
     if (!user.isEmailVerified) {
       throw new BadUserRequestError(
         "Email not verified. Please verify your email first."
@@ -327,92 +326,148 @@ const userController = {
     const hash = bcrypt.compareSync(req.body.password, user.password);
     if (!hash) throw new BadUserRequestError("incorrect password");
 
-    // Set session variables
-    // req.session.userId = user._id;
-    // req.session.role = user.role;
-    // Create a session object for the user.
-    // req.session.user = {
-    //   userId: user._id,
-    //   role: user.role,
-    // };
-    // Generate the access token and include it in the response
-
-    // const tokenPayload = { email: newCounsellor.email, role: "Counsellor" };
-    // const verificationToken = generateToken(tokenPayload);
     const tokenPayload = {
       userId: user._id,
       role: user.role,
       email: user.email,
     };
-    // const access_token = generateToken(tokenPayload);
+
     const access_token = generateToken(tokenPayload); // Expires in 7 days
 
-    // Log the access token to check if it contains the correct role
     console.log("Access Token:", access_token);
+    const refresh_token = jwt.sign(
+      { userId: user._id },
+      config.refresh_token_secret,
+      { expiresIn: "7d" }
+    ); // Generate a refresh token
 
-    // res.cookie("access_token", access_token, {
-    //
-    //   maxAge: 3600000, // Set the cookie to expire after 1 hour (adjust as needed)
-    //   httpOnly: true, // Prevent JavaScript access to the cookie
-    //   secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-    //   // sameSite: "strict", // Prevent CSRF attacks
-    // });
-    // const roles = user.roles;
+    console.log("Refresh Token:", refresh_token);
+    // Store the refresh token in a secure manner (e.g., in a database)
+    user.refreshToken = refresh_token;
+    await user.save();
 
-    // Set the session cookie.
-    // res.cookie("session", req.sessionID, sess.cookie);
-    // const userSession = { email: user.email }; // creating user session to keep user loggedin also on refresh
-    // req.session.user = userSession; // attach user session to session object from express-session
-    // req.session.user = user;
-    // // Create a session object for the user.
-    // req.session.user = {
-    //   email,
-    // };
+    // Send both tokens to the client
+    // res.cookie("refresh_token", refresh_token, {
+    res.cookie("jwt", refresh_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    }); // Set the refresh token as a secure cookie
 
-    try {
-      // Verify the access token
-      const decodedToken = verifyToken(access_token, config.jwt_secret_key);
-
-      console.log("Decoded Token:", decodedToken);
-
-      //  const decoded = verifyToken(token);
-      //  // const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      //  const email = decoded.payload.email;
-      //  const role = decoded.role;
-
-      if (decodedToken) {
-        // Extract the user role from the decoded token
-        const userRole = decodedToken.payload.role;
-        console.log("Role:", userRole);
-
-        res.status(200).json({
-          message: "Counsellor login successful",
-          status: "Success",
-          data: {
-            user: user,
-            role: userRole, // Send the role obtained from the token
-            access_token: access_token,
-            decodedToken: decodedToken,
-          },
-        });
-      } else {
-        // Token verification failed
-        res.status(401).json({
-          message: "Unauthorized",
-          status: "Error",
-          error: "Invalid token",
-        });
-      }
-    } catch (error) {
-      // An error occurred during token verification
-      console.error("Error during token verification:", error);
-      res.status(401).json({
-        message: "Unauthorized",
-        status: "Error",
-        error: "Invalid token",
-      });
-    }
+    res.status(200).json({
+      message: "Counsellor login successful",
+      status: "Success",
+      data: {
+        user: user,
+        role: user.role,
+        access_token: access_token,
+        refresh_token: refresh_token,
+      },
+    });
   },
+  // userLoginController: async (req, res) => {
+  //   const { error } = userLoginValidator.validate(req.body);
+  //   if (error) throw error;
+  //   const user = await Counsellor.findOne({
+  //     email: req.body?.email,
+  //   });
+  //   if (!user) throw new BadUserRequestError("Incorrect email");
+  //   // const emailExists = await User.findOne({ email });
+  //   if (!user.isEmailVerified) {
+  //     throw new BadUserRequestError(
+  //       "Email not verified. Please verify your email first."
+  //     );
+  //   }
+  //   const hash = bcrypt.compareSync(req.body.password, user.password);
+  //   if (!hash) throw new BadUserRequestError("incorrect password");
+
+  //   // Set session variables
+  //   // req.session.userId = user._id;
+  //   // req.session.role = user.role;
+  //   // Create a session object for the user.
+  //   // req.session.user = {
+  //   //   userId: user._id,
+  //   //   role: user.role,
+  //   // };
+  //   // Generate the access token and include it in the response
+
+  //   // const tokenPayload = { email: newCounsellor.email, role: "Counsellor" };
+  //   // const verificationToken = generateToken(tokenPayload);
+  //   const tokenPayload = {
+  //     userId: user._id,
+  //     role: user.role,
+  //     email: user.email,
+  //   };
+  //   // const access_token = generateToken(tokenPayload);
+  //   const access_token = generateToken(tokenPayload); // Expires in 7 days
+
+  //   // Log the access token to check if it contains the correct role
+  //   console.log("Access Token:", access_token);
+
+  //   // res.cookie("access_token", access_token, {
+  //   //
+  //   //   maxAge: 3600000, // Set the cookie to expire after 1 hour (adjust as needed)
+  //   //   httpOnly: true, // Prevent JavaScript access to the cookie
+  //   //   secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+  //   //   // sameSite: "strict", // Prevent CSRF attacks
+  //   // });
+  //   // const roles = user.roles;
+
+  //   // Set the session cookie.
+  //   // res.cookie("session", req.sessionID, sess.cookie);
+  //   // const userSession = { email: user.email }; // creating user session to keep user loggedin also on refresh
+  //   // req.session.user = userSession; // attach user session to session object from express-session
+  //   // req.session.user = user;
+  //   // // Create a session object for the user.
+  //   // req.session.user = {
+  //   //   email,
+  //   // };
+
+  //   try {
+  //     // Verify the access token
+  //     const decodedToken = verifyToken(access_token, config.jwt_secret_key);
+
+  //     console.log("Decoded Token:", decodedToken);
+
+  //     //  const decoded = verifyToken(token);
+  //     //  // const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  //     //  const email = decoded.payload.email;
+  //     //  const role = decoded.role;
+
+  //     if (decodedToken) {
+  //       // Extract the user role from the decoded token
+  //       const userRole = decodedToken.payload.role;
+  //       console.log("Role:", userRole);
+
+  //       res.status(200).json({
+  //         message: "Counsellor login successful",
+  //         status: "Success",
+  //         data: {
+  //           user: user,
+  //           role: userRole, // Send the role obtained from the token
+  //           access_token: access_token,
+  //           decodedToken: decodedToken,
+  //         },
+  //       });
+  //     } else {
+  //       // Token verification failed
+  //       res.status(401).json({
+  //         message: "Unauthorized",
+  //         status: "Error",
+  //         error: "Invalid token",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     // An error occurred during token verification
+  //     console.error("Error during token verification:", error);
+  //     res.status(401).json({
+  //       message: "Unauthorized",
+  //       status: "Error",
+  //       error: "Invalid token",
+  //     });
+  //   }
+  // },
   // RIGHT
   //   res.status(200).json({
   //     message: "Counsellor login successful",
@@ -427,6 +482,37 @@ const userController = {
   //     },
   //   });
   // },
+
+  handleRefreshToken: async (req, res) => {
+    const cookies = req.cookies;
+    if (!cookies?.jwt) return res.sendStatus(401);
+    const refreshToken = cookies.jwt;
+
+    const foundUser = await Counsellor.findOne({ refreshToken }).exec();
+    if (!foundUser) return res.sendStatus(403); // Forbidden
+    // Evaluate jwt
+    jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET,
+      (err, decoded) => {
+        if (err || foundUser.email !== decoded.email)
+          return res.sendStatus(403);
+        const role = Object.values(foundUser.role);
+        const access_token = jwt.sign(
+          {
+            UserInfo: {
+              email: decoded.email,
+              role: role,
+            },
+          },
+          process.env.ACCESS_TOKEN_SECRET,
+          { expiresIn: "10s" }
+        );
+        res.json({ role, access_token });
+      }
+    );
+  },
+
   verifyLoginTokenController: async (req, res) => {
     const { access_token } = req.body;
     try {

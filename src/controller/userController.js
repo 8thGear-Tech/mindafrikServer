@@ -341,7 +341,9 @@ const userController = {
     console.log("Refresh Token:", refresh_token);
     // Store the refresh token in a secure manner (e.g., in a database)
     user.refresh_token = refresh_token;
-    await user.save();
+    const result = await user.save();
+    console.log(result);
+    console.log(role);
 
     // Send both tokens to the client
     // res.cookie("refresh_token", refresh_token, {

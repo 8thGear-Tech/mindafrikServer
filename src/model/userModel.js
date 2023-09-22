@@ -77,6 +77,7 @@ const counsellorSchema = new mongoose.Schema({
     enum: ["Admin", "Counsellor", "Counsellee"],
     default: "Counsellor", // Assuming default role for a counsellor
   },
+  refresh_token: String,
 
   //new
   // submittedAt: String,

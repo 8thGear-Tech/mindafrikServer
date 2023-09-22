@@ -16,9 +16,9 @@ import jwt from "jsonwebtoken";
 import { sendVerificationEmail, sendOtpEmail } from "../config/mailer.js";
 import bcrypt from "bcrypt";
 import config from "../config/index.js";
-import { generateToken } from "../utils/jwtUtils.js";
+import { generateToken, generateRefreshToken } from "../utils/jwtUtils.js";
 import { clearTokenCookie } from "../utils/jwtUtils.js";
-import { verifyToken } from "../utils/jwtUtils.js";
+import { verifyToken, verifyRefreshToken } from "../utils/jwtUtils.js";
 import saveFileToGridFS from "./saveFileToGridFs.js";
 
 dotenv.config({ path: "./configenv.env" });
@@ -336,7 +336,7 @@ const userController = {
 
     console.log("Access Token:", access_token);
 
-    const refresh_token = generateToken(tokenPayload);
+    const refresh_token = generateRefreshToken(tokenPayload);
 
     console.log("Refresh Token:", refresh_token);
     // Store the refresh token in a secure manner (e.g., in a database)
@@ -347,7 +347,7 @@ const userController = {
 
     // Send both tokens to the client
     // res.cookie("refresh_token", refresh_token, {
-    res.cookie("refresh_token", refresh_token, {
+    res.cookie("jwt", refresh_token, {
       httpOnly: true,
       secure: true,
       sameSite: "None",
@@ -484,18 +484,26 @@ const userController = {
 
   handleRefreshToken: async (req, res) => {
     const cookies = req.cookies;
-    if (!cookies?.refresh_token) return res.sendStatus(401);
-    const refresh_token = cookies.refresh_token;
+    if (!cookies?.jwt) return res.sendStatus(401);
+    const refresh_token = cookies.jwt;
 
     const user = await Counsellor.findOne({ refresh_token }).exec();
     if (!user) return res.sendStatus(403); // Forbidden
     // Evaluate jwt
 
     try {
-      const decoded = verifyToken(refresh_token, config.jwt_secret_key);
+      const decoded = verifyRefreshToken(
+        refresh_token,
+        config.refresh_secret_key
+      );
 
       if (user.email === decoded.email) {
         // const role = Object.values(user.role);
+        // Check the expiration date of the refresh token
+        if (decoded.exp < Date.now() / 1000) {
+          return res.sendStatus(401); // Unauthorized
+        }
+
         const role = user.role;
         const access_token = generateToken({
           UserInfo: {

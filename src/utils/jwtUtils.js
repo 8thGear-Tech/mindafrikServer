@@ -35,6 +35,29 @@ export function verifyToken(token) {
     throw new Error("Expired token");
   }
 }
+export const generateRefreshToken = (payload) => {
+  try {
+    // const expiresIn = "7d"; // Token expires in 1 day
+    const expiresIn = "7d";
+    const token = jwt.sign({ payload }, config.refresh_secret_key, {
+      expiresIn,
+    });
+    return token;
+  } catch (error) {
+    console.error("Error generating token:", error);
+    throw error;
+  }
+};
+
+export function verifyRefreshToken(token) {
+  // return jwt.verify(token, config.jwt_secret_key);
+  try {
+    return jwt.verify(token, config.refresh_secret_key);
+  } catch (error) {
+    // Token is either expired or invalid
+    throw new Error("Expired token");
+  }
+}
 
 // Middleware for checking user roles
 export const checkUserRole = (allowedRoles) => {

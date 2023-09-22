@@ -347,7 +347,7 @@ const userController = {
 
     // Send both tokens to the client
     // res.cookie("refresh_token", refresh_token, {
-    res.cookie("jwt", refresh_token, {
+    res.cookie("refresh_token", refresh_token, {
       httpOnly: true,
       secure: true,
       sameSite: "None",
@@ -484,8 +484,8 @@ const userController = {
 
   handleRefreshToken: async (req, res) => {
     const cookies = req.cookies;
-    if (!cookies?.jwt) return res.sendStatus(401);
-    const refresh_token = cookies.jwt;
+    if (!cookies?.refresh_token) return res.sendStatus(401);
+    const refresh_token = cookies.refresh_token;
 
     const user = await Counsellor.findOne({ refresh_token }).exec();
     if (!user) return res.sendStatus(403); // Forbidden

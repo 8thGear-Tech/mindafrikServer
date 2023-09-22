@@ -495,7 +495,8 @@ const userController = {
       const decoded = verifyToken(refresh_token, config.jwt_secret_key);
 
       if (user.email === decoded.email) {
-        const role = Object.values(user.role);
+        // const role = Object.values(user.role);
+        const role = user.role;
         const access_token = generateToken({
           UserInfo: {
             email: decoded.email,

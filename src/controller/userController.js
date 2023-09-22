@@ -337,7 +337,7 @@ const userController = {
     console.log("Access Token:", access_token);
     const refresh_token = jwt.sign(
       { userId: user._id },
-      config.refresh_token_secret,
+      config.jwt_secret_key,
       { expiresIn: "7d" }
     ); // Generate a refresh token
 
@@ -491,26 +491,21 @@ const userController = {
     const foundUser = await Counsellor.findOne({ refreshToken }).exec();
     if (!foundUser) return res.sendStatus(403); // Forbidden
     // Evaluate jwt
-    jwt.verify(
-      refreshToken,
-      process.env.REFRESH_TOKEN_SECRET,
-      (err, decoded) => {
-        if (err || foundUser.email !== decoded.email)
-          return res.sendStatus(403);
-        const role = Object.values(foundUser.role);
-        const access_token = jwt.sign(
-          {
-            UserInfo: {
-              email: decoded.email,
-              role: role,
-            },
+    jwt.verify(refreshToken, config.jwt_secret_key, (err, decoded) => {
+      if (err || foundUser.email !== decoded.email) return res.sendStatus(403);
+      const role = Object.values(foundUser.role);
+      const access_token = jwt.sign(
+        {
+          UserInfo: {
+            email: decoded.email,
+            role: role,
           },
-          process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: "10s" }
-        );
-        res.json({ role, access_token });
-      }
-    );
+        },
+        config.jwt_secret_key,
+        { expiresIn: "10s" }
+      );
+      res.json({ role, access_token });
+    });
   },
 
   verifyLoginTokenController: async (req, res) => {

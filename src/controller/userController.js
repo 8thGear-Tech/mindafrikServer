@@ -335,15 +335,12 @@ const userController = {
     const access_token = generateToken(tokenPayload); // Expires in 7 days
 
     console.log("Access Token:", access_token);
-    const refresh_token = jwt.sign(
-      { userId: user._id },
-      config.jwt_secret_key,
-      { expiresIn: "7d" }
-    ); // Generate a refresh token
+
+    const refresh_token = generateToken(tokenPayload);
 
     console.log("Refresh Token:", refresh_token);
     // Store the refresh token in a secure manner (e.g., in a database)
-    user.refreshToken = refresh_token;
+    user.refresh_token = refresh_token;
     await user.save();
 
     // Send both tokens to the client
@@ -486,27 +483,51 @@ const userController = {
   handleRefreshToken: async (req, res) => {
     const cookies = req.cookies;
     if (!cookies?.jwt) return res.sendStatus(401);
-    const refreshToken = cookies.jwt;
+    const refresh_token = cookies.jwt;
 
-    const foundUser = await Counsellor.findOne({ refreshToken }).exec();
-    if (!foundUser) return res.sendStatus(403); // Forbidden
+    const user = await Counsellor.findOne({ refresh_token }).exec();
+    if (!user) return res.sendStatus(403); // Forbidden
     // Evaluate jwt
-    jwt.verify(refreshToken, config.jwt_secret_key, (err, decoded) => {
-      if (err || foundUser.email !== decoded.email) return res.sendStatus(403);
-      const role = Object.values(foundUser.role);
-      const access_token = jwt.sign(
-        {
+
+    try {
+      const decoded = verifyToken(refresh_token, config.jwt_secret_key);
+
+      if (user.email === decoded.email) {
+        const role = Object.values(user.role);
+        const access_token = generateToken({
           UserInfo: {
             email: decoded.email,
             role: role,
+            // email: decoded.payload.email,
+            // role: decoded.payload.role,
           },
-        },
-        config.jwt_secret_key,
-        { expiresIn: "10s" }
-      );
-      res.json({ role, access_token });
-    });
+        });
+
+        res.json({ role, access_token });
+      } else {
+        return res.sendStatus(403); // Forbidden
+      }
+    } catch (error) {
+      return res.sendStatus(403); // Forbidden (Token verification failed)
+    }
   },
+  // const decodedToken = verifyToken(access_token, config.jwt_secret_key);
+  //   jwt.verify(refresh_token, config.jwt_secret_key, (err, decoded) => {
+  //     if (err || user.email !== decoded.email) return res.sendStatus(403);
+  //     const role = Object.values(user.role);
+  //     const access_token = jwt.sign(
+  //       {
+  //         UserInfo: {
+  //           email: decoded.email,
+  //           role: role,
+  //         },
+  //       },
+  //       config.jwt_secret_key,
+  //       { expiresIn: "10s" }
+  //     );
+  //     res.json({ role, access_token });
+  //   });
+  // },
 
   verifyLoginTokenController: async (req, res) => {
     const { access_token } = req.body;

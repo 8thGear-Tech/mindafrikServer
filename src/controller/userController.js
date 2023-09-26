@@ -790,7 +790,7 @@ const userController = {
     // const resume = req.files["resume"][0].filename;
     // const coverletter = req.files["coverletter"][0].filename;
 
-    const resume = cloudinary.uploader.upload(req.file.path);
+    const resumeUpload = await cloudinary.uploader.upload(req.file.path);
 
     // const resume = req.file.filename;
     // const coverletter = req.file.filename;
@@ -832,8 +832,8 @@ const userController = {
       nationality: nationality,
       stateOfOrigin: stateOfOrigin,
       dateOfBirth: dateOfBirth,
-      resume: resume.secure_url,
-      resume_id: resume.public_id,
+      resume: resumeUpload.secure_url,
+      resume_id: resumeUpload.public_id,
       // resume: resume,
       // coverletter: coverletter,
       school: school,

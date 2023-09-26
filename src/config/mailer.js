@@ -91,6 +91,34 @@ export const sendVerificationEmail = async (
     console.log("ERROR: ", err);
   }
 };
+export const sendCounselleeVerificationEmail = async (
+  req,
+  email,
+  firstName,
+  counselleeVerificationLink
+) => {
+  try {
+    const mailOptions = {
+      from: process.env.GMAIL_ADDRESS,
+      to: email,
+      subject: "Counsellee Test",
+      // html: `<p>Please verify your email by clicking <a href="${verificationLink}">here</a>.</p>`,
+      html: ` 
+      <p>
+      Dear ${firstName},
+    </p>
+    <p>
+    To finalize your registration, and account setup for the beginning of your journey with us, please verify your account by clicking this <a href="${counselleeVerificationLink}">link</a>
+    </p>
+    `,
+    };
+
+    let emailTransporter = await createTransporter();
+    await emailTransporter.sendMail(mailOptions);
+  } catch (err) {
+    console.log("ERROR: ", err);
+  }
+};
 export const sendOtpEmail = async (email, otp) => {
   try {
     const mailOptions = {

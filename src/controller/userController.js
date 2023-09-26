@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 // import session from "express-session";
 import { BadUserRequestError, NotFoundError } from "../error/error.js";
-import { User, Counsellor } from "../model/userModel.js";
+import { User, Counsellor, AllUsers } from "../model/userModel.js";
 import {
   counsellorSignUpValidator,
   userSignUpValidator,
@@ -13,7 +13,11 @@ import {
   userLoginValidator,
 } from "../validators/userValidator.js";
 import jwt from "jsonwebtoken";
-import { sendVerificationEmail, sendOtpEmail } from "../config/mailer.js";
+import {
+  sendVerificationEmail,
+  sendCounselleeVerificationEmail,
+  sendOtpEmail,
+} from "../config/mailer.js";
 import bcrypt from "bcrypt";
 import config from "../config/index.js";
 import { generateToken, generateRefreshToken } from "../utils/jwtUtils.js";
@@ -197,12 +201,17 @@ const userController = {
       password: hashedPassword,
     });
 
-    const tokenPayload = { email: newUser.email };
+    const tokenPayload = { email: newUser.email, role: "Counsellee" };
     const verificationToken = generateToken(tokenPayload);
 
-    // const verificationLink = `https://mindafrikserver.onrender.com/user/verify-email?token=${verificationToken}`;
+    const counselleeVerificationLink = `https://mindafrikserver.onrender.com/user/verify-email?token=${verificationToken}`;
     // const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
-    // sendVerificationEmail(req, newUser.email, verificationLink);
+    sendCounselleeVerificationEmail(
+      req,
+      newUser.email,
+      newUser.firstName,
+      counselleeVerificationLink
+    );
 
     res.status(201).json({
       message: "A new user has been created successfully",
@@ -316,22 +325,31 @@ const userController = {
   userLoginController: async (req, res) => {
     const { error } = userLoginValidator.validate(req.body);
     if (error) throw error;
-    const user = await Counsellor.findOne({
-      email: req.body?.email,
+
+    const { email, password } = req.body;
+
+    const user = await AllUsers.findOne({
+      $or: [{ "counsellor.email": email }, { "counsellee.email": email }],
     });
     if (!user) throw new BadUserRequestError("Incorrect email");
-    if (!user.isEmailVerified) {
+
+    const counsellee = user.counsellee;
+    const counsellor = user.counsellor;
+
+    const selectedModel = counsellee || counsellor;
+
+    if (!selectedModel.isEmailVerified) {
       throw new BadUserRequestError(
         "Email not verified. Please verify your email first."
       );
     }
-    const hash = bcrypt.compareSync(req.body.password, user.password);
+    const hash = bcrypt.compareSync(password, selectedModel.password);
     if (!hash) throw new BadUserRequestError("incorrect password");
 
     const tokenPayload = {
-      userId: user._id,
-      role: user.role,
-      email: user.email,
+      userId: selectedModel._id,
+      role: selectedModel.role,
+      email: selectedModel.email,
     };
 
     const access_token = generateToken(tokenPayload); // Expires in 7 days
@@ -342,10 +360,10 @@ const userController = {
 
     console.log("Refresh Token:", refresh_token);
     // Store the refresh token in a secure manner (e.g., in a database)
-    user.refresh_token = refresh_token;
-    const result = await user.save();
+    selectedModel.refresh_token = refresh_token;
+    const result = await selectedModel.save();
     console.log(result);
-    console.log(user.role);
+    console.log(selectedModel.role);
 
     // Send both tokens to the client
     // res.cookie("refresh_token", refresh_token, {
@@ -357,16 +375,70 @@ const userController = {
     }); // Set the refresh token as a secure cookie
 
     res.status(200).json({
-      message: "Counsellor login successful",
+      message: `${selectedModel.role} login successful`,
       status: "Success",
       data: {
-        user: user,
-        role: user.role,
+        user: selectedModel,
+        role: selectedModel.role,
         access_token: access_token,
         refresh_token: refresh_token,
       },
     });
   },
+  // OlduserLoginController: async (req, res) => {
+  //   const { error } = userLoginValidator.validate(req.body);
+  //   if (error) throw error;
+  //   const user = await Counsellor.findOne({
+  //     email: req.body?.email,
+  //   });
+  //   if (!user) throw new BadUserRequestError("Incorrect email");
+  //   if (!user.isEmailVerified) {
+  //     throw new BadUserRequestError(
+  //       "Email not verified. Please verify your email first."
+  //     );
+  //   }
+  //   const hash = bcrypt.compareSync(req.body.password, user.password);
+  //   if (!hash) throw new BadUserRequestError("incorrect password");
+
+  //   const tokenPayload = {
+  //     userId: user._id,
+  //     role: user.role,
+  //     email: user.email,
+  //   };
+
+  //   const access_token = generateToken(tokenPayload); // Expires in 7 days
+
+  //   console.log("Access Token:", access_token);
+
+  //   const refresh_token = generateRefreshToken(tokenPayload);
+
+  //   console.log("Refresh Token:", refresh_token);
+  //   // Store the refresh token in a secure manner (e.g., in a database)
+  //   user.refresh_token = refresh_token;
+  //   const result = await user.save();
+  //   console.log(result);
+  //   console.log(user.role);
+
+  //   // Send both tokens to the client
+  //   // res.cookie("refresh_token", refresh_token, {
+  //   res.cookie("jwt", refresh_token, {
+  //     httpOnly: true,
+  //     secure: true,
+  //     sameSite: "None",
+  //     maxAge: 7 * 24 * 60 * 60 * 1000,
+  //   }); // Set the refresh token as a secure cookie
+
+  //   res.status(200).json({
+  //     message: "Counsellor login successful",
+  //     status: "Success",
+  //     data: {
+  //       user: user,
+  //       role: user.role,
+  //       access_token: access_token,
+  //       refresh_token: refresh_token,
+  //     },
+  //   });
+  // },
   // userLoginController: async (req, res) => {
   //   const { error } = userLoginValidator.validate(req.body);
   //   if (error) throw error;

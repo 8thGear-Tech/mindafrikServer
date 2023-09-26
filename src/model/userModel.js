@@ -21,6 +21,17 @@ const userSchema = new mongoose.Schema({
     default: false,
   },
   otp: Number,
+  role: {
+    type: String,
+    enum: ["Admin", "Counsellor", "Counsellee"],
+    default: "Counsellee", // Assuming default role for a counsellee
+  },
+  refresh_token: String,
+  // applicationDate: {
+  //   type: Date,
+  //   default: Date.now,
+  //   get: (date) => moment(date).format("DD/MM/YY"),
+  // },
 });
 
 const User = mongoose.model("User", userSchema);
@@ -79,10 +90,22 @@ const counsellorSchema = new mongoose.Schema({
     default: "Counsellor", // Assuming default role for a counsellor
   },
   refresh_token: String,
-
+  // applicationDate: {
+  //   type: Date,
+  //   default: Date.now,
+  //   get: (date) => moment(date).format("DD/MM/YY"),
+  // },
   //new
   // submittedAt: String,
 });
+
+const AllUsers = mongoose.model(
+  "AllUsers",
+  new mongoose.Schema({
+    counsellor: counsellorSchema,
+    counsellee: userSchema,
+  })
+);
 //new
 // counsellorSchema.pre("save", function (next) {
 //   const currentDate = new Date();
@@ -92,4 +115,4 @@ const counsellorSchema = new mongoose.Schema({
 
 const Counsellor = mongoose.model("Counsellor", counsellorSchema);
 
-export { User, Counsellor };
+export { User, Counsellor, AllUsers };

@@ -847,16 +847,16 @@ const userController = {
     newCounsellor.save();
 
     // const tokenPayload = { email: newCounsellor.email };
-    const tokenPayload = { email: newCounsellor.email, role: "Counsellor" };
-    const verificationToken = generateToken(tokenPayload);
-    const verificationLink = `https://mindafrikserver.onrender.com/user/verify-email?token=${verificationToken}`;
-    // const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
-    sendVerificationEmail(
-      req,
-      newCounsellor.email,
-      newCounsellor.firstName,
-      verificationLink
-    );
+    // const tokenPayload = { email: newCounsellor.email, role: "Counsellor" };
+    // const verificationToken = generateToken(tokenPayload);
+    // const verificationLink = `https://mindafrikserver.onrender.com/user/verify-email?token=${verificationToken}`;
+    // // const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
+    // sendVerificationEmail(
+    //   req,
+    //   newCounsellor.email,
+    //   newCounsellor.firstName,
+    //   verificationLink
+    // );
 
     console.log(req.body);
     res.status(201).json({

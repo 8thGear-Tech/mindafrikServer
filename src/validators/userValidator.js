@@ -34,6 +34,7 @@ const counsellorSignUpValidator = Joi.object({
   stateOfOrigin: Joi.string(),
   dateOfBirth: Joi.string(),
   resume: Joi.string(),
+  resume_id: Joi.string(),
   // coverletter: Joi.string(),
   school: Joi.string(),
   degree: Joi.string(),

@@ -21,6 +21,8 @@ import { clearTokenCookie } from "../utils/jwtUtils.js";
 import { verifyToken, verifyRefreshToken } from "../utils/jwtUtils.js";
 import saveFileToGridFS from "./saveFileToGridFs.js";
 
+import cloudinary from "../utils/cloudinary.js";
+
 dotenv.config({ path: "./configenv.env" });
 
 const mongoURI = config.MONGODB_CONNECTION_URL;
@@ -788,7 +790,9 @@ const userController = {
     // const resume = req.files["resume"][0].filename;
     // const coverletter = req.files["coverletter"][0].filename;
 
-    const resume = req.file.filename;
+    const resume = cloudinary.v2.uploader.upload(req.file.path);
+
+    // const resume = req.file.filename;
     // const coverletter = req.file.filename;
     const {
       firstName,
@@ -828,7 +832,9 @@ const userController = {
       nationality: nationality,
       stateOfOrigin: stateOfOrigin,
       dateOfBirth: dateOfBirth,
-      resume: resume,
+      resume: resume.secure_url,
+      resume_id: resume.public_id,
+      // resume: resume,
       // coverletter: coverletter,
       school: school,
       degree: degree,

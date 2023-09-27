@@ -340,6 +340,8 @@ const userController = {
 
     const selectedModel = counsellee || counsellor;
 
+    console.log("Selected Model:", selectedModel);
+
     if (!selectedModel.isEmailVerified) {
       throw new BadUserRequestError(
         "Email not verified. Please verify your email first."

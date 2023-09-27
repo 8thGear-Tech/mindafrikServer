@@ -332,7 +332,9 @@ const userController = {
 
     const user = await AllUsers.findOne({
       $or: [{ "counsellor.email": email }, { "counsellee.email": email }],
-    });
+    })
+      .populate("counsellor")
+      .populate("counsellee");
     if (!user) throw new BadUserRequestError("Incorrect email");
 
     const counsellee = user.counsellee;

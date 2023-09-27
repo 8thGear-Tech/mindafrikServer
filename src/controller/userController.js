@@ -328,6 +328,8 @@ const userController = {
 
     const { email, password } = req.body;
 
+    console.log("Request Body:", req.body);
+
     const user = await AllUsers.findOne({
       $or: [{ "counsellor.email": email }, { "counsellee.email": email }],
     });

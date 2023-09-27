@@ -335,16 +335,16 @@ const userController = {
     })
       .populate("counsellor")
       .populate("counsellee");
-    if (!user || !user.counsellor || !user.counsellee) {
-      throw new BadUserRequestError(
-        "Missing counsellor or counsellee subdocument"
-      );
-    }
-
     // if (!user || !user.counsellor || !user.counsellee) {
-    //   // Repopulate the subdocuments
-    //   await AllUsers.populate(user, ["counsellor", "counsellee"]);
+    //   throw new BadUserRequestError(
+    //     "Missing counsellor or counsellee subdocument"
+    //   );
     // }
+
+    if (!user || !user.counsellor || !user.counsellee) {
+      // Repopulate the subdocuments
+      await AllUsers.populate(user, ["counsellor", "counsellee"]);
+    }
     if (!user) throw new BadUserRequestError("Incorrect email");
 
     const counsellee = user.counsellee;

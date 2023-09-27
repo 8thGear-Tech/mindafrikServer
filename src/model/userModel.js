@@ -99,13 +99,6 @@ const counsellorSchema = new mongoose.Schema({
   // submittedAt: String,
 });
 
-const AllUsers = mongoose.model(
-  "AllUsers",
-  new mongoose.Schema({
-    counsellor: counsellorSchema,
-    counsellee: userSchema,
-  })
-);
 //new
 // counsellorSchema.pre("save", function (next) {
 //   const currentDate = new Date();
@@ -114,5 +107,25 @@ const AllUsers = mongoose.model(
 // });
 
 const Counsellor = mongoose.model("Counsellor", counsellorSchema);
+
+const AllUsersSchema = new mongoose.Schema({
+  counsellor: counsellorSchema,
+  counsellee: userSchema,
+  userId: {
+    type: Number,
+    unique: true,
+    min: 100000000,
+    max: 999999999,
+  },
+});
+
+AllUsersSchema.pre("save", function (next) {
+  this.userId = Math.floor(Math.random() * 900000000 + 100000000);
+  // this.applicationDate = moment(this.applicationDate).format("DD/MM/YY");
+
+  next();
+});
+
+const AllUsers = mongoose.model("AllUsers", AllUsersSchema);
 
 export { User, Counsellor, AllUsers };

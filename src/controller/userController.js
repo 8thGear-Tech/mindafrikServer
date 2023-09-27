@@ -330,31 +330,34 @@ const userController = {
 
     console.log("Request Body:", req.body);
 
-    const user = await AllUsers.findOne({
+    const allUsers = await AllUsers.findOne({
       $or: [{ "counsellor.email": email }, { "counsellee.email": email }],
-    })
-      .populate("counsellor")
-      .populate("counsellee");
+    });
+    // .populate("counsellor")
+    // .populate("counsellee");
     // if (!user || !user.counsellor || !user.counsellee) {
     //   throw new BadUserRequestError(
     //     "Missing counsellor or counsellee subdocument"
     //   );
     // }
 
-    if (!user || !user.counsellor || !user.counsellee) {
-      // Repopulate the subdocuments
-      await AllUsers.populate(user, ["counsellor", "counsellee"]);
-    }
-    if (!user) throw new BadUserRequestError("Incorrect email");
+    // if (!user || !user.counsellor || !user.counsellee) {
+    //   // Repopulate the subdocuments
+    //   await AllUsers.populate(user, ["counsellor", "counsellee"]);
+    // }
+    if (!allUsers) throw new BadUserRequestError("Incorrect email");
 
-    const counsellee = user.counsellee;
-    const counsellor = user.counsellor;
+    const userType = allUsers.counsellee ? "counsellee" : "counsellor";
+    const user = allUsers[userType];
+    // const counsellee = user.counsellee;
+    // const counsellor = user.counsellor;
 
-    const selectedModel = counsellee || counsellor;
+    // const selectedModel = counsellee || counsellor;
 
-    console.log("Selected Model:", selectedModel);
+    // console.log("Selected Model:", selectedModel);
 
-    if (!selectedModel.isEmailVerified) {
+    // if (!selectedModel.isEmailVerified) {
+    if (!user.isEmailVerified) {
       throw new BadUserRequestError(
         "Email not verified. Please verify your email first."
       );
@@ -363,9 +366,9 @@ const userController = {
     if (!hash) throw new BadUserRequestError("incorrect password");
 
     const tokenPayload = {
-      userId: selectedModel._id,
-      role: selectedModel.role,
-      email: selectedModel.email,
+      userId: user._id,
+      role: user.role,
+      email: user.email,
     };
 
     const access_token = generateToken(tokenPayload); // Expires in 7 days
@@ -376,10 +379,10 @@ const userController = {
 
     console.log("Refresh Token:", refresh_token);
     // Store the refresh token in a secure manner (e.g., in a database)
-    selectedModel.refresh_token = refresh_token;
-    const result = await selectedModel.save();
+    user.refresh_token = refresh_token;
+    const result = await allUsers.save();
     console.log(result);
-    console.log(selectedModel.role);
+    // console.log(selectedModel.role);
 
     // Send both tokens to the client
     // res.cookie("refresh_token", refresh_token, {
@@ -391,11 +394,14 @@ const userController = {
     }); // Set the refresh token as a secure cookie
 
     res.status(200).json({
-      message: `${selectedModel.role} login successful`,
+      // message: `${selectedModel.role} login successful`,
+      message: `${
+        userType.charAt(0).toUpperCase() + userType.slice(1)
+      } login successful`,
       status: "Success",
       data: {
-        user: selectedModel,
-        role: selectedModel.role,
+        user: user,
+        role: user.role,
         access_token: access_token,
         refresh_token: refresh_token,
       },

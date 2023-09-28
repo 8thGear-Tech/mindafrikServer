@@ -330,7 +330,7 @@ const userController = {
 
     console.log("Request Body:", req.body);
 
-    const allUsers = await AllUsers.findOne({
+    const user = await AllUsers.findOne({
       $or: [{ "counsellor.email": email }, { "counsellee.email": email }],
     });
     // .populate("counsellor")
@@ -345,19 +345,19 @@ const userController = {
     //   // Repopulate the subdocuments
     //   await AllUsers.populate(user, ["counsellor", "counsellee"]);
     // }
-    if (!allUsers) throw new BadUserRequestError("Incorrect email");
+    if (!user) throw new BadUserRequestError("Incorrect email");
 
-    const userType = allUsers.counsellee ? "counsellee" : "counsellor";
-    const user = allUsers[userType];
-    // const counsellee = user.counsellee;
-    // const counsellor = user.counsellor;
+    // const userType = allUsers.counsellee ? "counsellee" : "counsellor";
+    // const user = allUsers[userType];
+    const counsellee = user.counsellee;
+    const counsellor = user.counsellor;
 
-    // const selectedModel = counsellee || counsellor;
+    const selectedModel = counsellee || counsellor;
 
-    // console.log("Selected Model:", selectedModel);
+    console.log("Selected Model:", selectedModel);
 
-    // if (!selectedModel.isEmailVerified) {
-    if (!user.isEmailVerified) {
+    if (!selectedModel.isEmailVerified) {
+    // if (!user.isEmailVerified) {
       throw new BadUserRequestError(
         "Email not verified. Please verify your email first."
       );
@@ -379,8 +379,11 @@ const userController = {
 
     console.log("Refresh Token:", refresh_token);
     // Store the refresh token in a secure manner (e.g., in a database)
-    user.refresh_token = refresh_token;
-    const result = await allUsers.save();
+    // user.refresh_token = refresh_token;
+    // const result = await allUsers.save();
+    selectedModel.refresh_token = refresh_token;
+
+    const result = await selectedModel.save();
     console.log(result);
     // console.log(selectedModel.role);
 
@@ -394,14 +397,16 @@ const userController = {
     }); // Set the refresh token as a secure cookie
 
     res.status(200).json({
-      // message: `${selectedModel.role} login successful`,
-      message: `${
-        userType.charAt(0).toUpperCase() + userType.slice(1)
-      } login successful`,
+      message: `${selectedModel.role} login successful`,
+      // message: `${
+      //   userType.charAt(0).toUpperCase() + userType.slice(1)
+      // } login successful`,
       status: "Success",
       data: {
-        user: user,
-        role: user.role,
+        // user: user,
+        // role: user.role,
+        user: selectedModel,
+        role: selectedModel.role,
         access_token: access_token,
         refresh_token: refresh_token,
       },
@@ -938,6 +943,13 @@ const userController = {
       role: "Counsellor",
       // submittedAt: submittedAt,
     });
+
+  const allUsers = new AllUsers({
+    counsellor: newCounsellor,
+  });
+    
+    await allUsers.save();
+
     newCounsellor.save();
 
     // const tokenPayload = { email: newCounsellor.email };

@@ -209,17 +209,17 @@ const userController = {
 
     newUser.save();
 
-    const tokenPayload = { email: newUser.email, role: "Counsellee" };
-    const verificationToken = generateToken(tokenPayload);
+    // const tokenPayload = { email: newUser.email, role: "Counsellee" };
+    // const verificationToken = generateToken(tokenPayload);
 
-    const counselleeVerificationLink = `https://mindafrikserver.onrender.com/user/verify-email?token=${verificationToken}`;
-    // const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
-    sendCounselleeVerificationEmail(
-      req,
-      newUser.email,
-      newUser.firstName,
-      counselleeVerificationLink
-    );
+    // const counselleeVerificationLink = `https://mindafrikserver.onrender.com/user/verify-email?token=${verificationToken}`;
+    // // const verificationLink = `http://localhost:4000/user/verify-email?token=${verificationToken}`;
+    // sendCounselleeVerificationEmail(
+    //   req,
+    //   newUser.email,
+    //   newUser.firstName,
+    //   counselleeVerificationLink
+    // );
 
     res.status(201).json({
       message: "A new user has been created successfully",

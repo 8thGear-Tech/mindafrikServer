@@ -15,7 +15,7 @@ const counselleeSchema = new mongoose.Schema({
   password: {
     type: String,
   },
-  userRole: String,
+  // userRole: String,
   isEmailVerified: {
     type: Boolean,
     default: false,

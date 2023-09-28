@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-const userSignUpValidator = Joi.object({
+const counselleeSignUpValidator = Joi.object({
   firstName: Joi.string(),
   lastName: Joi.string(),
   email: Joi.string(),
@@ -61,7 +61,7 @@ const userLoginValidator = Joi.object({
 
 export {
   counsellorSignUpValidator,
-  userSignUpValidator,
+  counselleeSignUpValidator,
   verifyEmailValidator,
   otpValidator,
   userLoginValidator,

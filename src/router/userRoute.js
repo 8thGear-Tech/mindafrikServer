@@ -76,6 +76,12 @@ userRouter.post(
   upload.single("resume"),
   tryCatchHandler(userController.counsellorController)
 );
+
+//counsellee
+userRouter.post(
+  "/sign-up-as-a-counsellee",
+  tryCatchHandler(userController.counselleeController)
+);
 // userRouter.post(
 //   "/sign-up-as-a-counsellor",
 //   upload.fields([

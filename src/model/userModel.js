@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
+const counselleeSchema = new mongoose.Schema({
   firstName: String,
   lastName: String,
   email: {
@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema({
   // },
 });
 
-const User = mongoose.model("User", userSchema);
+const Counsellee = mongoose.model("Counsellee", counselleeSchema);
 
 const counsellorSchema = new mongoose.Schema({
   firstName: String,
@@ -110,7 +110,7 @@ const Counsellor = mongoose.model("Counsellor", counsellorSchema);
 
 const AllUsersSchema = new mongoose.Schema({
   counsellor: counsellorSchema,
-  counsellee: userSchema,
+  counsellee: counselleeSchema,
   // userId: {
   //   type: Number,
   //   unique: true,
@@ -128,4 +128,4 @@ const AllUsersSchema = new mongoose.Schema({
 
 const AllUsers = mongoose.model("AllUsers", AllUsersSchema);
 
-export { User, Counsellor, AllUsers };
+export { Counsellee, Counsellor, AllUsers };

@@ -4,10 +4,10 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 // import session from "express-session";
 import { BadUserRequestError, NotFoundError } from "../error/error.js";
-import { User, Counsellor, AllUsers } from "../model/userModel.js";
+import { Counsellee, Counsellor, AllUsers } from "../model/userModel.js";
 import {
   counsellorSignUpValidator,
-  userSignUpValidator,
+  counselleeSignUpValidator,
   verifyEmailValidator,
   otpValidator,
   userLoginValidator,
@@ -178,11 +178,11 @@ const userController = {
   //     },
   //   });
   // },
-  userSignupController: async (req, res) => {
-    const { error } = userSignUpValidator.validate(req.body);
+  counselleeController: async (req, res) => {
+    const { error } = counselleeSignUpValidator.validate(req.body);
     if (error) throw error;
     const { firstName, lastName, email, password } = req.body;
-    const emailExists = await User.find({ email });
+    const emailExists = await Counsellee.find({ email });
     if (emailExists.length > 0)
       throw new BadUserRequestError(
         "An account with this email already exists"
@@ -194,12 +194,20 @@ const userController = {
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
 
-    const newUser = await User.create({
+    const newUser = await Counsellee.create({
       firstName: firstName,
       lastName: lastName,
       email: email,
       password: hashedPassword,
     });
+
+    const allUsers = new AllUsers({
+      counsellee: newUser,
+    });
+
+    await allUsers.save();
+
+    newUser.save();
 
     const tokenPayload = { email: newUser.email, role: "Counsellee" };
     const verificationToken = generateToken(tokenPayload);
@@ -228,7 +236,7 @@ const userController = {
       // const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const email = decoded.payload.email;
 
-      const user = await User.findOne({ email });
+      const user = await AllUsers.findOne({ email });
 
       if (!user) {
         return res.status(404).json({
@@ -263,7 +271,7 @@ const userController = {
     const { email } = req.body;
 
     // Check if user exists
-    const emailExists = await User.findOne({ email });
+    const emailExists = await AllUsers.findOne({ email });
     // if (!emailExists) throw new BadUserRequestError("invalid email");
     // Check if the email is verified
     if (!emailExists.isEmailVerified) {
@@ -294,7 +302,7 @@ const userController = {
     const { error } = otpValidator.validate(req.body);
     if (error) throw error;
     const { email } = req.query;
-    const user = await User.findOne({ email: email });
+    const user = await AllUsers.findOne({ email: email });
     if (!user) throw new BadUserRequestError("invalid email");
     // Check if the email is verified
     if (!user.isEmailVerified) {
@@ -312,7 +320,7 @@ const userController = {
     //   });
     // }
     const { otp } = req.body;
-    const verifyOtp = await User.findOne({ email: email, otp: otp });
+    const verifyOtp = await AllUsers.findOne({ email: email, otp: otp });
     if (!verifyOtp) throw new BadUserRequestError("invalid OTP");
     // await User.updateOne({ email: email }, { isEmailVerified: true });
     res.status(200).json({
@@ -357,7 +365,7 @@ const userController = {
     console.log("Selected Model:", selectedModel);
 
     if (!selectedModel.isEmailVerified) {
-    // if (!user.isEmailVerified) {
+      // if (!user.isEmailVerified) {
       throw new BadUserRequestError(
         "Email not verified. Please verify your email first."
       );
@@ -944,10 +952,10 @@ const userController = {
       // submittedAt: submittedAt,
     });
 
-  const allUsers = new AllUsers({
-    counsellor: newCounsellor,
-  });
-    
+    const allUsers = new AllUsers({
+      counsellor: newCounsellor,
+    });
+
     await allUsers.save();
 
     newCounsellor.save();
